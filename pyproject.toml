@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dynamicfluency"
+version = "0.0.1"
+authors = [
+  { name="JJWRoeloffs", email="jelleroeloffs@gmail.com" },
+]
+description = "The base python package for DynamicFluency: Monitor and understand the dynamicity of linguistic aspects in (L2) speech."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GPL-3.0-or-later",
+    "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+"Homepage" = "https://github.com/JJWRoeloffs/bare_python_publish"
+"Bug Tracker" = "https://github.com/JJWRoeloffs/bare_python_publish/issues"
