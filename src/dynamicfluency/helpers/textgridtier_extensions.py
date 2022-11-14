@@ -42,3 +42,8 @@ def set_all_tiers_from_dict(
         grid.tierDict[tier].entryList[index] = set_label(
             grid.tierDict[tier].entryList[index], str(items[tier])
         )
+
+
+def make_lowecase_entrylist(entryList: List[namedtuple]):
+    """Get a copy of the entrylist where all labels are set to lowercase"""
+    return [replace_label(entry, lambda x: x.lower()) for entry in entryList]

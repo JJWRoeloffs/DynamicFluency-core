@@ -10,11 +10,8 @@ from dynamicfluency.helpers import (
     replace_label,
     entrylist_labels_to_string,
     set_label,
+    make_lowecase_entrylist,
 )
-
-
-def make_lowecase_entrylist(entryList: List[namedtuple]):
-    return [replace_label(entry, lambda x: x.lower()) for entry in entryList]
 
 
 def generate_tags_from_entrylist(entryList: List[namedtuple]) -> List[Union[str, str]]:

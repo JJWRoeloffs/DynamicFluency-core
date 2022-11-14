@@ -6,6 +6,7 @@ from .textgridtier_extensions import (
     set_label,
     set_all_tiers_static,
     set_all_tiers_from_dict,
+    make_lowecase_entrylist,
 )
 
 __all__ = (
@@ -17,4 +18,5 @@ __all__ = (
     "entrylist_labels_to_string",
     "set_all_tiers_static",
     "set_all_tiers_from_dict",
+    "make_lowercase_entrylist",
 )
