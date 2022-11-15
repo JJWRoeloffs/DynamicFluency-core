@@ -7,7 +7,7 @@ import argparse
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 
-from dynamicfluency.repititions import make_repetitions_tier, make_freqdist_tier
+from dynamicfluency.repetitions import make_repetitions_tier, make_freqdist_tier
 
 
 def parse_arguments() -> argparse.Namespace:

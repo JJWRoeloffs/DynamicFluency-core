@@ -13,13 +13,6 @@ def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
     return entry.__class__(label=new_label, **as_dict)
 
 
-def set_label(entry: namedtuple, s: str) -> namedtuple:
-    """Returns a new namedtuple with the "label" attribute changed to the passed one"""
-    as_dict = entry._asdict()
-    as_dict.pop("label")
-    return entry.__class__(label=s, **as_dict)
-
-
 def entrylist_labels_to_string(entryList: List[namedtuple]) -> str:
     """Make a single space-seperated string, out of the labels of an entryList
     Useful to make a "sentence" out of the words in the tier."""
@@ -29,8 +22,8 @@ def entrylist_labels_to_string(entryList: List[namedtuple]) -> str:
 def set_all_tiers_static(grid: Textgrid, *, item: str, index: int) -> None:
     """Sets the given index of all tiers' label of given grid to given value"""
     for tier in grid.tierDict:
-        grid.tierDict[tier].entryList[index] = set_label(
-            grid.tierDict[tier].entryList[index], item
+        grid.tierDict[tier].entryList[index] = replace_label(
+            grid.tierDict[tier].entryList[index], lambda x: item
         )
 
 
@@ -39,11 +32,11 @@ def set_all_tiers_from_dict(
 ) -> None:
     """Sets the given index of all tiers' label of given grid to given value"""
     for tier in grid.tierDict:
-        grid.tierDict[tier].entryList[index] = set_label(
-            grid.tierDict[tier].entryList[index], str(items[tier])
+        grid.tierDict[tier].entryList[index] = replace_label(
+            grid.tierDict[tier].entryList[index], lambda x: str(items[tier])
         )
 
 
-def make_lowecase_entrylist(entryList: List[namedtuple]):
+def make_lowercase_entrylist(entryList: List[namedtuple]):
     """Get a copy of the entrylist where all labels are set to lowercase"""
     return [replace_label(entry, lambda x: x.lower()) for entry in entryList]

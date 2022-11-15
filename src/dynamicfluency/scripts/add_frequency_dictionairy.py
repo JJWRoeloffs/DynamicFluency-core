@@ -56,7 +56,9 @@ def read_file(file: str, *, sep: str = " ") -> pandas.DataFrame:
     """Read file into Pandas dataframe with correct constraints.
     Trowing an understadable error when user puts in bad data"""
     try:
-        return pandas.read_csv(file, sep=sep, index_col="Lemma", engine="python")
+        return pandas.read_csv(
+            file, sep=sep, index_col="Lemma", dtype=str, engine="python"
+        )
     except ValueError as error:
         print(
             """Unable to read file (Make the lemmas in the specified file are in a column named \"Lemma\")

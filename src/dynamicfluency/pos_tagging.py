@@ -9,8 +9,8 @@ from praatio.data_classes.textgrid_tier import TextgridTier
 from dynamicfluency.helpers import (
     replace_label,
     entrylist_labels_to_string,
-    set_label,
-    make_lowecase_entrylist,
+    replace_label,
+    make_lowercase_entrylist,
 )
 
 
@@ -37,7 +37,7 @@ def allign_tags(
             word += tags[0][0]
             label = " ".join([label, "_".join(tags[0])])
             tags.pop(0)
-        new_entryList.append(set_label(entry, label.strip()))
+        new_entryList.append(replace_label(entry, lambda x: label.strip()))
     return new_entryList
 
 
@@ -47,7 +47,7 @@ def make_pos_tier(words_tier: TextgridTier, *, name: str = "POStags") -> Textgri
     nltk.download("punkt", quiet=True, halt_on_error=True)
     nltk.download("averaged_perceptron_tagger", quiet=True, halt_on_error=True)
 
-    lowercase_entryList = make_lowecase_entrylist(words_tier.entryList)
+    lowercase_entryList = make_lowercase_entrylist(words_tier.entryList)
 
     tags = generate_tags_from_entrylist(lowercase_entryList)
     tag_entryList = allign_tags(tags, lowercase_entryList)
