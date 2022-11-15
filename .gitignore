@@ -139,10 +139,6 @@ dmypy.json
 .pyre/
 
 # Data used for testing
-*.wav
-*.TextGrid
-*.mp3
-*.flac
 test/
 input/
 output/

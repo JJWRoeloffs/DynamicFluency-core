@@ -1,0 +1,4 @@
+Lemma,FREQcount,CDcount,FREQlow,Cdlow,SUBTLWF,Lg10WF,SUBTLCD,Lg10CD,Dom_PoS_SUBTLEX,Freq_dom_PoS_SUBTLEX,Percentage_dom_PoS,All_PoS_SUBTLEX,All_freqs_SUBTLEX
+a,1041179,8382,976941,8380,20415.27,6.0175,99.93,3.9234,Article,993445,0.96,Article.Adverb.Letter.To.Noun.Preposition.Adjective,993445.33186.6441.744.257.52.5
+aal,1,1,1,1,0.02,0.3010,0.01,0.3010,Adjective,1,1.00,Adjective,1
+aardvark,21,12,14,8,0.41,1.3424,0.14,1.1139,Noun,16,0.76,Noun.Verb.Name,16.3.2
