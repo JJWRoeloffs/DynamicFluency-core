@@ -30,6 +30,7 @@ def allign_tags(
     new_entryList = []
     for entry in entryList:
         if not entry.label:
+            new_entryList.append(replace_label(entry, lambda x: ""))
             continue
         word = ""
         label = ""

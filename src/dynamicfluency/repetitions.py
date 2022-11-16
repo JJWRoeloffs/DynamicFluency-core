@@ -49,7 +49,7 @@ def make_freqdist_tier(
 ) -> TextgridTier:
     nltk.download("punkt", quiet=True, halt_on_error=True)
 
-    text = entrylist_labels_to_string(pos_tier.entryList)
+    text = entrylist_labels_to_string(pos_tier.entryList, to_ignore=to_ignore)
     fdist = nltk.FreqDist(nltk.word_tokenize(text))
     freqdist_list = []
 

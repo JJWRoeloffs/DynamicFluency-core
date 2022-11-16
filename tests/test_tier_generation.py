@@ -28,9 +28,8 @@ class TestRepetitionsTier:
     )
     tier = make_repetitions_tier(
         pos_tier=get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid")),
+        max_cache=5,
         to_ignore=("uhm"),
-        # TODO test cache size by adding one more to the end that should be ignored
-        # TODO test empty lines to be ignored
     )
 
     def test_tier_length(self):
@@ -38,7 +37,7 @@ class TestRepetitionsTier:
 
     def test_timestamps(self):
         assert self.tier.minTimestamp == self.original_tier.minTimestamp == 0
-        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 7.1
+        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 9.1
 
     def test_entry_timestamps(self):
         for new, original in zip(self.tier.entryList, self.original_tier.entryList):
@@ -64,8 +63,22 @@ class TestRepetitionsTier:
         assert self.tier.entryList[4].label == "uhm"
 
     def test_ignored_skipped_over(self):
-        # text = "aal_NV" // 2 in between, but 1 of those in to_ignore.
+        # text = "aal_JJ" // 2 in between, but 1 of those in to_ignore.
         assert self.tier.entryList[5].label == "0.5"
+
+    def test_empty_ignored(self):
+        # text = ""
+        assert self.tier.entryList[6].label == ""
+
+    def test_empty_skipped_over(self):
+        # text = "aal_JJ" // one empty in between.
+        assert self.tier.entryList[7].label == "1.0"
+
+    def test_max_cache_respected(self):
+        # text = "aal_JJ" // 3 in between, meaning that the cashe should hold both.
+        assert self.tier.entryList[11].label == "0.25"
+        # text = "a_DT" // 4 in between, meaning that the cashe doesn't hold both.
+        assert self.tier.entryList[10].label == "0"
 
 
 class TestFreqdistTier:
@@ -82,7 +95,7 @@ class TestFreqdistTier:
 
     def test_timestamps(self):
         assert self.tier.minTimestamp == self.original_tier.minTimestamp == 0
-        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 7.1
+        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 9.1
 
     def test_entry_timestamps(self):
         for new, original in zip(self.tier.entryList, self.original_tier.entryList):
@@ -91,19 +104,28 @@ class TestFreqdistTier:
 
     def test_regular_tier(self):
         # text = "a_DT"
-        assert self.tier.entryList[0].label == "0.5"
+
+        assert self.tier.entryList[0].label == "0.4"
         # text = "a_DT"
-        assert self.tier.entryList[1].label == "0.5"
+        assert self.tier.entryList[1].label == "0.4"
         # text = "aal_NV"
-        assert self.tier.entryList[2].label == str(1 / 3)
+        assert self.tier.entryList[2].label == "0.4"
         #   text = "a_DT"
-        assert self.tier.entryList[3].label == "0.5"
+        assert self.tier.entryList[3].label == "0.4"
         # text = "aal_NV"
-        assert self.tier.entryList[5].label == str(1 / 3)
+        assert self.tier.entryList[5].label == "0.4"
+        # text = "some_JJ"
+        assert self.tier.entryList[8].label == "0.1"
+        # text = "some_NV"
+        assert self.tier.entryList[8].label == "0.1"
 
     def test_ignored_ignored(self):
         # text = "uhm" // in to_ignore
         assert self.tier.entryList[4].label == "uhm"
+
+    def test_empty_ignored(self):
+        # text = ""
+        assert self.tier.entryList[6].label == ""
 
 
 class TestPosTier:
@@ -138,4 +160,4 @@ class TestPosTier:
         for entry in self.tier.entryList:
             tags = split_pos_label(entry.label, get_pos=True).split(" ")
             for tag in tags:
-                assert tag in possible_tags
+                assert tag in possible_tags or entry.label == ""

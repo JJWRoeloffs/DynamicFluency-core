@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, List, Dict
+from typing import Callable, List, Dict, Set
 from collections import namedtuple
 
 from praatio.data_classes.textgrid import Textgrid
@@ -13,10 +13,18 @@ def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
     return entry.__class__(label=new_label, **as_dict)
 
 
-def entrylist_labels_to_string(entryList: List[namedtuple]) -> str:
+def entrylist_labels_to_string(
+    entryList: List[namedtuple], *, to_ignore: Set = set()
+) -> str:
     """Make a single space-seperated string, out of the labels of an entryList
     Useful to make a "sentence" out of the words in the tier."""
-    return " ".join([entry.label for entry in entryList])
+    return " ".join(
+        [
+            entry.label
+            for entry in entryList
+            if entry.label and (not entry.label in to_ignore)
+        ]
+    )
 
 
 def set_all_tiers_static(grid: Textgrid, *, item: str, index: int) -> None:

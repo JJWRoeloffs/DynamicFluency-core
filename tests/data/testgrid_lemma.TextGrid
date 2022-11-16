@@ -26,13 +26,17 @@ item []:
             text = "aal  " 
         intervals [4]:
             xmin = 5.4 
+            xmax = 5.6 
+            text = "" 
+        intervals [5]:
+            xmin = 5.6 
             xmax = 5.88 
             text = "aardvark" 
-        intervals [5]:
+        intervals [6]:
             xmin = 5.88 
             xmax = 6.2 
             text = "uhm" 
-         intervals [6]:
+        intervals [7]:
             xmin = 6.2 
             xmax = 7.1 
             text = "isn't"            

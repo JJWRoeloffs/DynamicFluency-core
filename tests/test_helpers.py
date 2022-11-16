@@ -48,7 +48,7 @@ class TestPosTierConversion:
 
     def test_timestamps(self):
         assert self.tier.minTimestamp == self.original_tier.minTimestamp == 0
-        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 7.1
+        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 9.1
 
     def test_entry_timestamps(self):
         for new, original in zip(self.tier.entryList, self.original_tier.entryList):
@@ -114,17 +114,45 @@ class TestLabelsToString:
             == "a A aal aardvark uhm isn't"
         )
 
+    def test_lemma_to_ignore(self):
+        lemma_tier = get_test_tier(
+            os.path.join("tests", "data", "testgrid_lemma.TextGrid")
+        )
+        assert (
+            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=("uhm"))
+            == "a A aal aardvark isn't"
+        )
+
     def test_converted_lemma(self):
         lemma_tier = pos_tier_to_lemma_tier(
             get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         )
-        assert entrylist_labels_to_string(lemma_tier.entryList) == "a a aal a uhm aal"
+        assert (
+            entrylist_labels_to_string(lemma_tier.entryList)
+            == "a a aal a uhm aal aal some some a aal"
+        )
+
+    def test_converted_lemma_to_ignore(self):
+        lemma_tier = pos_tier_to_lemma_tier(
+            get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
+        )
+        assert (
+            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=("uhm"))
+            == "a a aal a aal aal some some a aal"
+        )
 
     def test_pos(self):
         pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         assert (
             entrylist_labels_to_string(pos_tier.entryList)
-            == "a_DT a_DT aal_JJ a_DT uhm aal_JJ"
+            == "a_DT a_DT aal_JJ a_DT uhm aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
+        )
+
+    def test_pos_to_ignore(self):
+        pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
+        assert (
+            entrylist_labels_to_string(pos_tier.entryList, to_ignore=("uhm"))
+            == "a_DT a_DT aal_JJ a_DT aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
         )
 
 

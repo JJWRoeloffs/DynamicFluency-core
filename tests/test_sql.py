@@ -127,20 +127,26 @@ class TestFrequencyGrid:
             #     text = "  aal  " // in csv, but without trailing spaces
             assert entryList[2].label == self.data[1][tier_name]
 
+    def test_tiers_empty_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            #     text = ""
+            assert entryList[3].label == ""
+
     def test_tiers_ignored_data(self):
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
             #     text = "aardvark" // in to_ignore, in the csv
-            assert entryList[3].label == ""
+            assert entryList[4].label == ""
 
     def test_tiers_ignored_missing_data(self):
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
             # text = "uhm"  // in to_ignore and not in the csv
-            assert entryList[4].label == ""
+            assert entryList[5].label == ""
 
     def test_tiers_missing_data(self):
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
             # text = "isn't" // not in the csv
-            assert entryList[5].label == "MISSING"
+            assert entryList[6].label == "MISSING"
