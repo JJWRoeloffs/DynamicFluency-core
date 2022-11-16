@@ -29,7 +29,7 @@ class TestRepetitionsTier:
     tier = make_repetitions_tier(
         pos_tier=get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid")),
         max_cache=5,
-        to_ignore=("uhm"),
+        to_ignore=["uhm"],
     )
 
     def test_tier_length(self):
@@ -87,7 +87,7 @@ class TestFreqdistTier:
     )
     tier = make_freqdist_tier(
         pos_tier=get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid")),
-        to_ignore=("uhm"),
+        to_ignore=["uhm"],
     )
 
     def test_tier_length(self):

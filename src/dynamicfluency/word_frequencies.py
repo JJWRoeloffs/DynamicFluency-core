@@ -48,7 +48,7 @@ def set_labels_from_db(
 
 
 def create_frequency_grid(
-    lemma_tier: TextgridTier, *, cursor: sqlite3.Cursor, table_name: str, to_ignore: Set
+    lemma_tier: TextgridTier, *, cursor: sqlite3.Cursor, table_name: str, to_ignore: List[str]
 ) -> Textgrid:
     """Create frequency grid from database connection"""
 

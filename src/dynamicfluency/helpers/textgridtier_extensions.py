@@ -14,7 +14,7 @@ def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
 
 
 def entrylist_labels_to_string(
-    entryList: List[namedtuple], *, to_ignore: Set = set()
+    entryList: List[namedtuple], *, to_ignore: List[str] = []
 ) -> str:
     """Make a single space-seperated string, out of the labels of an entryList
     Useful to make a "sentence" out of the words in the tier."""

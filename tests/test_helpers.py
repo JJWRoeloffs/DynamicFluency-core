@@ -119,7 +119,7 @@ class TestLabelsToString:
             os.path.join("tests", "data", "testgrid_lemma.TextGrid")
         )
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=("uhm"))
+            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=["uhm"])
             == "a A aal aardvark isn't"
         )
 
@@ -137,7 +137,7 @@ class TestLabelsToString:
             get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         )
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=("uhm"))
+            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=["uhm"])
             == "a a aal a aal aal some some a aal"
         )
 
@@ -151,7 +151,7 @@ class TestLabelsToString:
     def test_pos_to_ignore(self):
         pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         assert (
-            entrylist_labels_to_string(pos_tier.entryList, to_ignore=("uhm"))
+            entrylist_labels_to_string(pos_tier.entryList, to_ignore=["uhm"])
             == "a_DT a_DT aal_JJ a_DT aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
         )
 

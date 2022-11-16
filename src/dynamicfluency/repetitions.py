@@ -18,7 +18,7 @@ def make_repetitions_tier(
     pos_tier: TextgridTier,
     *,
     max_cache: int = 100,
-    to_ignore: Set = set(),
+    to_ignore: List[str] = [],
     name: str = "Repetitions",
 ) -> TextgridTier:
 
@@ -45,7 +45,7 @@ def make_repetitions_tier(
 
 
 def make_freqdist_tier(
-    pos_tier: TextgridTier, *, to_ignore: Set = set(), name: str = "FreqDist"
+    pos_tier: TextgridTier, *, to_ignore: List[str] = [], name: str = "FreqDist"
 ) -> TextgridTier:
     nltk.download("punkt", quiet=True, halt_on_error=True)
 

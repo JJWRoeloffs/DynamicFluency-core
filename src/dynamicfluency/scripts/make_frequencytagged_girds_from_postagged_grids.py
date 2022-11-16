@@ -42,10 +42,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     args: argparse.Namespace = parser.parse_args()
-    if args.to_ignore:
-        args.to_ignore = set(args.to_ignore.split(","))
-    else:
-        args.to_ignore = set()
+    args.to_ignore = args.to_ignore.split(",")
     return args
 
 

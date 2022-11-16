@@ -76,7 +76,7 @@ class TestFrequencyGrid:
             os.path.join("tests", "data", "testlemma.csv")
         ),
         table_name="Mock",
-        to_ignore=("uhm", "aardvark"),
+        to_ignore=["uhm", "aardvark"],
     )
 
     def test_grid_timestamps(self):
