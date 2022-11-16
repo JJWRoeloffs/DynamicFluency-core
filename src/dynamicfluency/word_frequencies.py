@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
-from typing import Set, List
+from typing import List
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
@@ -48,7 +48,11 @@ def set_labels_from_db(
 
 
 def create_frequency_grid(
-    lemma_tier: TextgridTier, *, cursor: sqlite3.Cursor, table_name: str, to_ignore: List[str]
+    lemma_tier: TextgridTier,
+    *,
+    cursor: sqlite3.Cursor,
+    table_name: str,
+    to_ignore: List[str],
 ) -> Textgrid:
     """Create frequency grid from database connection"""
 

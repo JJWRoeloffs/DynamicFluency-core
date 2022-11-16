@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable, List, Dict, Set
+from typing import Callable, List, Dict
 from collections import namedtuple
 
 from praatio.data_classes.textgrid import Textgrid

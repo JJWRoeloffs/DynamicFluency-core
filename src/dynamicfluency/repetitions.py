@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import glob
 import argparse
-from typing import Set
+from typing import List
 
 import nltk
 from praatio import textgrid as tg
