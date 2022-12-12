@@ -6,12 +6,7 @@ from typing import List, Union
 import nltk
 from praatio.data_classes.textgrid_tier import TextgridTier
 
-from dynamicfluency.helpers import (
-    replace_label,
-    entrylist_labels_to_string,
-    replace_label,
-    make_lowercase_entrylist,
-)
+from dynamicfluency.helpers import entrylist_labels_to_string, make_lowercase_entrylist
 
 
 def generate_tags_from_entrylist(entryList: List[namedtuple]) -> List[Union[str, str]]:
@@ -30,7 +25,7 @@ def allign_tags(
     new_entryList = []
     for entry in entryList:
         if not entry.label:
-            new_entryList.append(replace_label(entry, lambda x: ""))
+            new_entryList.append(entry._replace(label=""))
             continue
         word = ""
         label = ""
@@ -38,7 +33,7 @@ def allign_tags(
             word += tags[0][0]
             label = " ".join([label, "_".join(tags[0])])
             tags.pop(0)
-        new_entryList.append(replace_label(entry, lambda x: label.strip()))
+        new_entryList.append(entry._replace(label=label.strip()))
     return new_entryList
 
 

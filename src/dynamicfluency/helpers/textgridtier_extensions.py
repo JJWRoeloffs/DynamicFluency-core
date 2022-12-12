@@ -8,9 +8,7 @@ from praatio.data_classes.textgrid import Textgrid
 
 def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
     """Returns a new namedtuple with the "label" attribute changed according to passed function."""
-    as_dict = entry._asdict()
-    new_label = f(as_dict.pop("label"))
-    return entry.__class__(label=new_label, **as_dict)
+    return entry._replace(label=f(entry.label))
 
 
 def entrylist_labels_to_string(
@@ -30,8 +28,8 @@ def entrylist_labels_to_string(
 def set_all_tiers_static(grid: Textgrid, *, item: str, index: int) -> None:
     """Sets the given index of all tiers' label of given grid to given value"""
     for tier in grid.tierDict:
-        grid.tierDict[tier].entryList[index] = replace_label(
-            grid.tierDict[tier].entryList[index], lambda x: item
+        grid.tierDict[tier].entryList[index] = (
+            grid.tierDict[tier].entryList[index]._replace(label=item)
         )
 
 
@@ -58,4 +56,4 @@ def set_all_tiers_from_dict(
 
 def make_lowercase_entrylist(entryList: List[namedtuple]):
     """Get a copy of the entrylist where all labels are set to lowercase"""
-    return [replace_label(entry, lambda x: x.lower()) for entry in entryList]
+    return [replace_label(entry, str.lower) for entry in entryList]

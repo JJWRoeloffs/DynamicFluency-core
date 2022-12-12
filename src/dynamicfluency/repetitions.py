@@ -8,10 +8,7 @@ import nltk
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid_tier import TextgridTier
 
-from dynamicfluency.helpers import (
-    replace_label,
-    entrylist_labels_to_string,
-)
+from dynamicfluency.helpers import entrylist_labels_to_string
 
 
 def make_repetitions_tier(
@@ -39,7 +36,7 @@ def make_repetitions_tier(
         except ValueError:
             repetitions = "0"
 
-        repetitions_list.append(replace_label(entry, lambda x: repetitions))
+        repetitions_list.append(entry._replace(label=repetitions))
 
     return pos_tier.new(name=name, entryList=repetitions_list)
 
@@ -59,6 +56,6 @@ def make_freqdist_tier(
             continue
 
         frequency = str(fdist.freq(entry.label))
-        freqdist_list.append(replace_label(entry, lambda x: frequency))
+        freqdist_list.append(entry._replace(label=frequency))
 
     return pos_tier.new(name=name, entryList=freqdist_list)

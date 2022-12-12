@@ -19,12 +19,8 @@ def split_pos_label(pos_label: str, *, get_pos: bool = False) -> str:
     "is_VB n't_RB" -> "VB RB"
 
     """
-    if get_pos:
-        join = " "
-        index = 1
-    else:
-        join = ""
-        index = 0
+    index = 1 if get_pos else 0
+    join = " " if get_pos else ""
 
     split = pos_label.split("_")
     lemmas_and_tags = chain(*[lemma.split(" ") for lemma in split])
