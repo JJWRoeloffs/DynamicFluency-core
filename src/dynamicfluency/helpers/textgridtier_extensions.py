@@ -36,12 +36,23 @@ def set_all_tiers_static(grid: Textgrid, *, item: str, index: int) -> None:
 
 
 def set_all_tiers_from_dict(
-    grid: Textgrid, *, items: Dict[str, str], index: int
+    grid: Textgrid,
+    *,
+    items: Dict[str, str],
+    index: int,
+    append: bool = False,
 ) -> None:
     """Sets the given index of all tiers' label of given grid to given value"""
+    function = (
+        (lambda y: lambda x: y)
+        if not append
+        else (lambda y: lambda x: str(" ".join([x, y]).strip()))
+    )
     for tier in grid.tierDict:
+        if items[tier] is None:
+            continue
         grid.tierDict[tier].entryList[index] = replace_label(
-            grid.tierDict[tier].entryList[index], lambda x: str(items[tier])
+            grid.tierDict[tier].entryList[index], function(items[tier])
         )
 
 

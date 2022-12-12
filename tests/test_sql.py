@@ -22,8 +22,7 @@ def create_mock_database_from_file(file: str) -> sqlite3.Cursor:
 
 def read_mock_databse_as_csv(file: str) -> List[Dict]:
     with open(file) as f:
-        data = list(csv.DictReader(f))
-    return data
+        return list(csv.DictReader(f))
 
 
 class TestSQL:
@@ -46,20 +45,7 @@ class TestSQL:
 class TestFrequencyGrid:
     data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
     correct_lemma = [
-        "Lemma",
-        "FREQcount",
-        "CDcount",
-        "FREQlow",
-        "Cdlow",
-        "SUBTLWF",
-        "Lg10WF",
-        "SUBTLCD",
-        "Lg10CD",
-        "Dom_PoS_SUBTLEX",
-        "Freq_dom_PoS_SUBTLEX",
-        "Percentage_dom_PoS",
-        "All_PoS_SUBTLEX",
-        "All_freqs_SUBTLEX",
+        "Lemma", "FREQcount", "CDcount","FREQlow","Cdlow","SUBTLWF","Lg10WF","SUBTLCD","Lg10CD",
     ]
     original_tier = tg.openTextgrid(
         os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
@@ -81,7 +67,7 @@ class TestFrequencyGrid:
 
     def test_grid_timestamps(self):
         assert self.grid.minTimestamp == self.original_tier.minTimestamp == 0
-        assert self.grid.maxTimestamp == self.original_tier.maxTimestamp == 7.1
+        assert self.grid.maxTimestamp == self.original_tier.maxTimestamp == 7.2
 
     def test_tier_names(self):
         tiers = self.grid.tierDict.keys()
@@ -106,7 +92,7 @@ class TestFrequencyGrid:
             assert (
                 self.grid.tierDict[tier_name].maxTimestamp
                 == self.original_tier.maxTimestamp
-                == 7.1
+                == 7.2
             )
 
     def test_entry_timestamps(self):
@@ -145,8 +131,14 @@ class TestFrequencyGrid:
             # text = "uhm"  // in to_ignore and not in the csv
             assert entryList[5].label == ""
 
+    def test_tiers_split_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            # text = "isn't" // in CSV as "isn" and "t"
+            assert entryList[6].label == " ".join([self.data[3][tier_name], self.data[4][tier_name]])
+
     def test_tiers_missing_data(self):
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
-            # text = "isn't" // not in the csv
-            assert entryList[6].label == "MISSING"
+            # text = "BLEEH" // not in the csv
+            assert entryList[7].label == "MISSING"

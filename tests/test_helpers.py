@@ -111,7 +111,7 @@ class TestLabelsToString:
         )
         assert (
             entrylist_labels_to_string(lemma_tier.entryList)
-            == "a A aal aardvark uhm isn't"
+            == "a A aal aardvark uhm isn't BLEEH"
         )
 
     def test_lemma_to_ignore(self):
@@ -120,7 +120,7 @@ class TestLabelsToString:
         )
         assert (
             entrylist_labels_to_string(lemma_tier.entryList, to_ignore=["uhm"])
-            == "a A aal aardvark isn't"
+            == "a A aal aardvark isn't BLEEH"
         )
 
     def test_converted_lemma(self):

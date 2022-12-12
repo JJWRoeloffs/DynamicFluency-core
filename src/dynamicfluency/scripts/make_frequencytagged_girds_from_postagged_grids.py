@@ -32,7 +32,12 @@ def parse_arguments() -> argparse.Namespace:
         "--directory",
         nargs="?",
         default="output",
-        help="The directory the pos_tags .TextGrid is expected in, and the output is saved to",
+        help="The directory the tokens and phases is expected in, and the output is saved to",
+    )
+    parser.add_argument(
+        "-a",
+        "--allignment",
+        help="The type of allignment textgrid, either 'maus' or 'aeneas'",
     )
     parser.add_argument(
         "-i",
@@ -49,15 +54,22 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    tagged_files = glob.glob(f"./{args.directory}/*.pos_tags.TextGrid")
-    for file in tagged_files:
-        tagged_grid = tg.openTextgrid(file, includeEmptyIntervals=True)
-        lemma_tier = pos_tier_to_lemma_tier(tagged_grid.tierDict["POStags"])
+    if args.allignment == "maus":
+        tokentier_name = "ORT-MAU"
+    elif args.allignment == "aeneas":
+        tokentier_name = "Words"
+    else:
+        raise ValueError(f"Unknown allignment type found: {args.allignment}")
+
+    allignment_files = glob.glob(f"./{args.directory}/*.allignment.TextGrid")
+
+    for file in allignment_files:
+        allignment_grid = tg.openTextgrid(file, includeEmptyIntervals=True)
 
         try:
             cursor = connect_to_database(args.database)
             frequency_grid = create_frequency_grid(
-                lemma_tier=lemma_tier,
+                lemma_tier=allignment_grid.tierDict[tokentier_name],
                 cursor=cursor,
                 table_name=args.table_name,
                 to_ignore=args.to_ignore,

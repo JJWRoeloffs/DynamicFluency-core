@@ -33,18 +33,22 @@ def set_labels_from_db(
     *, cursor: sqlite3.Cursor, grid: Textgrid, table_name: str, lemma: str, index: int
 ) -> None:
     """Sets the tiers of a textgrid with one tier for every databse column to their respecive entries at an index"""
+    lemma_parts = lemma.split("'")
+    set_all_tiers_static(grid, item="", index=index)
 
-    cursor.execute(
-        f"SELECT DISTINCT * FROM {table_name} WHERE LOWER(Lemma) LIKE LOWER((?));",
-        [lemma],
-    )
+    for part in lemma_parts:
+        cursor.execute(
+            f"SELECT DISTINCT * FROM {table_name} WHERE LOWER(Lemma) LIKE LOWER((?));",
+            [part],
+        )
 
-    try:
-        row = cursor.fetchall()[0]
-    except IndexError:
-        set_all_tiers_static(grid, item="MISSING", index=index)
-    else:
-        set_all_tiers_from_dict(grid, items=row, index=index)
+        try:
+            row = cursor.fetchall()[0]
+        except IndexError:
+            set_all_tiers_static(grid, item="MISSING", index=index)
+            return
+        else:
+            set_all_tiers_from_dict(grid, items=row, index=index, append=True)
 
 
 def create_frequency_grid(

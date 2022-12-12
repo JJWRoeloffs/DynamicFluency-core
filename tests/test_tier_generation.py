@@ -141,7 +141,7 @@ class TestPosTier:
 
     def test_timestamps(self):
         assert self.tier.minTimestamp == self.original_tier.minTimestamp == 0
-        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 7.1
+        assert self.tier.maxTimestamp == self.original_tier.maxTimestamp == 7.2
 
     def test_entry_timestamps(self):
         for new, original in zip(self.tier.entryList, self.original_tier.entryList):
