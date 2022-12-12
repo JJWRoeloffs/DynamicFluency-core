@@ -142,3 +142,103 @@ class TestFrequencyGrid:
             entryList = self.grid.tierDict[tier_name].entryList
             # text = "BLEEH" // not in the csv
             assert entryList[7].label == "MISSING"
+
+class TestPartialFrequencyGrid:
+    data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
+    correct_lemma = ["FREQcount", "CDcount","Lg10WF", "Lg10CD"]
+    original_tier = tg.openTextgrid(
+        os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
+        includeEmptyIntervals=True,
+    ).tierDict["TestTier"]
+    grid = create_frequency_grid(
+        lemma_tier=(
+            tg.openTextgrid(
+                os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
+                includeEmptyIntervals=True,
+            ).tierDict["TestTier"]
+        ),
+        cursor=create_mock_database_from_file(
+            os.path.join("tests", "data", "testlemma.csv")
+        ),
+        table_name="Mock",
+        to_ignore=["uhm", "aardvark"],
+        rows=correct_lemma
+    )
+
+    def test_grid_timestamps(self):
+        assert self.grid.minTimestamp == self.original_tier.minTimestamp == 0
+        assert self.grid.maxTimestamp == self.original_tier.maxTimestamp == 7.2
+
+    def test_tier_names(self):
+        tiers = self.grid.tierDict.keys()
+        assert len(self.correct_lemma) == len(tiers)
+        for name, lemma in zip(tiers, self.correct_lemma):
+            assert isinstance(name, str)
+            assert name == lemma
+
+    def test_grid_length(self):
+        for tier_name in self.grid.tierDict.keys():
+            assert len(self.original_tier.entryList) == len(
+                self.grid.tierDict[tier_name].entryList
+            )
+
+    def test_tiers_timestamp(self):
+        for tier_name in self.grid.tierDict.keys():
+            assert (
+                self.grid.tierDict[tier_name].minTimestamp
+                == self.original_tier.minTimestamp
+                == 0
+            )
+            assert (
+                self.grid.tierDict[tier_name].maxTimestamp
+                == self.original_tier.maxTimestamp
+                == 7.2
+            )
+
+    def test_entry_timestamps(self):
+        for tier_name in self.grid.tierDict.keys():
+            for new, original in zip(
+                self.grid.tierDict[tier_name].entryList, self.original_tier.entryList
+            ):
+                assert new.start == original.start
+                assert new.end == original.end
+
+    def test_tiers_normal_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            #     text = "a" // in csv
+            assert entryList[0].label == self.data[0][tier_name]
+            #     text = "A" // in csv, but in lowercase
+            assert entryList[1].label == self.data[0][tier_name]
+            #     text = "  aal  " // in csv, but without trailing spaces
+            assert entryList[2].label == self.data[1][tier_name]
+
+    def test_tiers_empty_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            #     text = ""
+            assert entryList[3].label == ""
+
+    def test_tiers_ignored_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            #     text = "aardvark" // in to_ignore, in the csv
+            assert entryList[4].label == ""
+
+    def test_tiers_ignored_missing_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            # text = "uhm"  // in to_ignore and not in the csv
+            assert entryList[5].label == ""
+
+    def test_tiers_split_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            # text = "isn't" // in CSV as "isn" and "t"
+            assert entryList[6].label == " ".join([self.data[3][tier_name], self.data[4][tier_name]])
+
+    def test_tiers_missing_data(self):
+        for tier_name in self.grid.tierDict.keys():
+            entryList = self.grid.tierDict[tier_name].entryList
+            # text = "BLEEH" // not in the csv
+            assert entryList[7].label == "MISSING"

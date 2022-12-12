@@ -45,9 +45,17 @@ def parse_arguments() -> argparse.Namespace:
         nargs="?",
         help="The words to ignore and not assign any value, seperated by commas.",
     )
+    parser.add_argument(
+        "-r",
+        "--rows",
+        nargs="?",
+        default="",
+        help="The Rows to read from the database table, seperated by commas",
+    )
 
     args: argparse.Namespace = parser.parse_args()
     args.to_ignore = args.to_ignore.split(",")
+    args.rows = args.rows.split(",") if args.rows else None
     return args
 
 
@@ -73,6 +81,7 @@ def main():
                 cursor=cursor,
                 table_name=args.table_name,
                 to_ignore=args.to_ignore,
+                rows=args.rows,
             )
         finally:
             cursor.connection.close()

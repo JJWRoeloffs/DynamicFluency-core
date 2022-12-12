@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
-from typing import List
+from typing import List, Optional
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
@@ -17,13 +17,19 @@ def get_column_names(cursor: sqlite3.Cursor, *, table_name: str) -> List[str]:
 
 
 def make_empty_frequency_grid(
-    *, cursor: sqlite3.Cursor, table_name: str, base_tier: TextgridTier
+    *,
+    cursor: sqlite3.Cursor,
+    table_name: str,
+    base_tier: TextgridTier,
+    rows: Optional[List[str]] = None,
 ) -> Textgrid:
     """Makes an "empty" frequency grid.
     This is a grid that has all the tiers initialised according to the column names of the databse,
     but does not have any values in those tiers, all of them being copies from the base."""
+    if rows is None:
+        rows = get_column_names(cursor, table_name=table_name)
     frequency_grid = Textgrid()
-    for name in get_column_names(cursor, table_name=table_name):
+    for name in rows:
         tier = base_tier.new(name=name)
         frequency_grid.addTier(tier)
     return frequency_grid
@@ -57,11 +63,12 @@ def create_frequency_grid(
     cursor: sqlite3.Cursor,
     table_name: str,
     to_ignore: List[str],
+    rows: Optional[List[str]] = None,
 ) -> Textgrid:
     """Create frequency grid from database connection"""
 
     frequency_grid = make_empty_frequency_grid(
-        cursor=cursor, table_name=table_name, base_tier=lemma_tier
+        cursor=cursor, table_name=table_name, base_tier=lemma_tier, rows=rows
     )
 
     for i, entry in enumerate(lemma_tier.entryList):
