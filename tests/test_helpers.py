@@ -267,6 +267,11 @@ class TestSetAllTiersFromDict:
         "Second": "SecondTestString",
         "Third": "ThirdTestString",
     }
+    test_dict_other_datatypes = {
+        "First": "Hello!",
+        "Second": 1.2,
+        "Third": 8,
+    }
 
     def test_grid_timestamps(self):
         set_all_tiers_from_dict(self.test_grid, items=self.test_dict, index=1)
@@ -322,4 +327,42 @@ class TestSetAllTiersFromDict:
             entryList = self.test_grid.tierDict[tier_name].entryList
             assert entryList[0].label == "One"
             assert entryList[1].label == self.test_dict[tier_name]
+            assert entryList[2].label == "Three"
+
+    def test_set_all_tiers_st_other_datatypes(self):
+        set_all_tiers_from_dict(
+            self.test_grid, items=self.test_dict_other_datatypes, index=1
+        )
+        for tier_name in self.test_grid.tierDict.keys():
+            entryList = self.test_grid.tierDict[tier_name].entryList
+            assert entryList[0].label == "One"
+            assert entryList[1].label == self.test_dict_other_datatypes[tier_name]
+            assert entryList[2].label == "Three"
+
+    def test_set_all_tiers_st_append(self):
+        set_all_tiers_from_dict(self.test_grid, items=self.test_dict, index=1)
+        set_all_tiers_from_dict(
+            self.test_grid, items=self.test_dict, index=1, append=True
+        )
+        for tier_name in self.test_grid.tierDict.keys():
+            entryList = self.test_grid.tierDict[tier_name].entryList
+            original_entryList = self.original_grid.tierDict[tier_name].entryList
+            assert entryList[0].label == "One"
+            assert entryList[1].label == " ".join(2 * [str(self.test_dict[tier_name])])
+            assert entryList[2].label == "Three"
+
+    def test_set_all_tiers_st_append_other_datatypes(self):
+        set_all_tiers_from_dict(
+            self.test_grid, items=self.test_dict_other_datatypes, index=1
+        )
+        set_all_tiers_from_dict(
+            self.test_grid, items=self.test_dict_other_datatypes, index=1, append=True
+        )
+        for tier_name in self.test_grid.tierDict.keys():
+            entryList = self.test_grid.tierDict[tier_name].entryList
+            original_entryList = self.original_grid.tierDict[tier_name].entryList
+            assert entryList[0].label == "One"
+            assert entryList[1].label == " ".join(
+                2 * [str(self.test_dict_other_datatypes[tier_name])]
+            )
             assert entryList[2].label == "Three"

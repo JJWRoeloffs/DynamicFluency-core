@@ -44,7 +44,7 @@ def set_all_tiers_from_dict(
     function = (
         (lambda y: lambda x: y)
         if not append
-        else (lambda y: lambda x: str(" ".join([x, y]).strip()))
+        else (lambda y: lambda x: str(" ".join([str(x), str(y)]).strip()))
     )
     for tier in grid.tierDict:
         if items[tier] is None:
