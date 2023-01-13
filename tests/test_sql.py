@@ -45,7 +45,15 @@ class TestSQL:
 class TestFrequencyGrid:
     data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
     correct_lemma = [
-        "Lemma", "FREQcount", "CDcount","FREQlow","Cdlow","SUBTLWF","Lg10WF","SUBTLCD","Lg10CD",
+        "Lemma",
+        "FREQcount",
+        "CDcount",
+        "FREQlow",
+        "Cdlow",
+        "SUBTLWF",
+        "Lg10WF",
+        "SUBTLCD",
+        "Lg10CD",
     ]
     original_tier = tg.openTextgrid(
         os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
@@ -135,7 +143,9 @@ class TestFrequencyGrid:
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
             # text = "isn't" // in CSV as "isn" and "t"
-            assert entryList[6].label == " ".join([self.data[3][tier_name], self.data[4][tier_name]])
+            assert entryList[6].label == " ".join(
+                [self.data[3][tier_name], self.data[4][tier_name]]
+            )
 
     def test_tiers_missing_data(self):
         for tier_name in self.grid.tierDict.keys():
@@ -143,9 +153,10 @@ class TestFrequencyGrid:
             # text = "BLEEH" // not in the csv
             assert entryList[7].label == "MISSING"
 
+
 class TestPartialFrequencyGrid:
     data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
-    correct_lemma = ["FREQcount", "CDcount","Lg10WF", "Lg10CD"]
+    correct_lemma = ["FREQcount", "CDcount", "Lg10WF", "Lg10CD"]
     original_tier = tg.openTextgrid(
         os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
         includeEmptyIntervals=True,
@@ -162,7 +173,7 @@ class TestPartialFrequencyGrid:
         ),
         table_name="Mock",
         to_ignore=["uhm", "aardvark"],
-        rows=correct_lemma
+        rows=correct_lemma,
     )
 
     def test_grid_timestamps(self):
@@ -235,7 +246,9 @@ class TestPartialFrequencyGrid:
         for tier_name in self.grid.tierDict.keys():
             entryList = self.grid.tierDict[tier_name].entryList
             # text = "isn't" // in CSV as "isn" and "t"
-            assert entryList[6].label == " ".join([self.data[3][tier_name], self.data[4][tier_name]])
+            assert entryList[6].label == " ".join(
+                [self.data[3][tier_name], self.data[4][tier_name]]
+            )
 
     def test_tiers_missing_data(self):
         for tier_name in self.grid.tierDict.keys():
