@@ -19,6 +19,11 @@ def parse_arguments() -> argparse.Namespace:
     requiredNamed.add_argument(
         "-t", "--table_name", help="Name of the table to be read from.", required=True
     )
+    requiredNamed.add_argument(
+        "-a",
+        "--allignment",
+        help="The type of allignment textgrid, either 'maus' or 'aeneas'", required=True
+    )
 
     parser.add_argument(
         "-b",
@@ -35,11 +40,6 @@ def parse_arguments() -> argparse.Namespace:
         help="The directory the tokens and phases is expected in, and the output is saved to",
     )
     parser.add_argument(
-        "-a",
-        "--allignment",
-        help="The type of allignment textgrid, either 'maus' or 'aeneas'",
-    )
-    parser.add_argument(
         "-i",
         "--to_ignore",
         nargs="?",
@@ -54,7 +54,7 @@ def parse_arguments() -> argparse.Namespace:
     )
 
     args: argparse.Namespace = parser.parse_args()
-    args.to_ignore = args.to_ignore.split(",")
+    args.to_ignore = args.to_ignore.split(",") if args.to_ignore is not None else None
     args.rows = args.rows.split(",") if args.rows else None
     return args
 
@@ -88,7 +88,7 @@ def main():
 
         frequency_grid.removeTier("Lemma")
 
-        name = file.replace(".pos_tags.TextGrid", ".frequencies.TextGrid")
+        name = file.replace(".allignment.TextGrid", ".frequencies.TextGrid")
         frequency_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
 

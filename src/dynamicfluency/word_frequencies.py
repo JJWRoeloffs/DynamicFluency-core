@@ -62,10 +62,11 @@ def create_frequency_grid(
     *,
     cursor: sqlite3.Cursor,
     table_name: str,
-    to_ignore: List[str],
+    to_ignore: Optional[List[str]] = None,
     rows: Optional[List[str]] = None,
 ) -> Textgrid:
     """Create frequency grid from database connection"""
+    to_ignore = [] if to_ignore is None else to_ignore
 
     frequency_grid = make_empty_frequency_grid(
         cursor=cursor, table_name=table_name, base_tier=lemma_tier, rows=rows
