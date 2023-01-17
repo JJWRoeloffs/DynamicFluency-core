@@ -22,7 +22,8 @@ def parse_arguments() -> argparse.Namespace:
     requiredNamed.add_argument(
         "-a",
         "--allignment",
-        help="The type of allignment textgrid, either 'maus' or 'aeneas'", required=True
+        help="The type of allignment textgrid, either 'maus' or 'aeneas'",
+        required=True,
     )
 
     parser.add_argument(
