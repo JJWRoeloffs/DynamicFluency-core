@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import glob
 import argparse
+import sqlite3
 
 from praatio import textgrid as tg
 
-from dynamicfluency.helpers import pos_tier_to_lemma_tier, connect_to_database
+from dynamicfluency.helpers import get_row_cursor, get_local_glob
 from dynamicfluency.word_frequencies import create_frequency_grid
 
 
@@ -70,13 +70,13 @@ def main():
     else:
         raise ValueError(f"Unknown allignment type found: {args.allignment}")
 
-    allignment_files = glob.glob(f"./{args.directory}/*.allignment.TextGrid")
+    allignment_files = get_local_glob(args.directory, glob="*.allignment.TextGrid")
 
     for file in allignment_files:
-        allignment_grid = tg.openTextgrid(file, includeEmptyIntervals=True)
+        allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
-        try:
-            cursor = connect_to_database(args.database)
+        with sqlite3.connect(args.database) as connection:
+            cursor = get_row_cursor(connection)
             frequency_grid = create_frequency_grid(
                 lemma_tier=allignment_grid.tierDict[tokentier_name],
                 cursor=cursor,
@@ -84,12 +84,10 @@ def main():
                 to_ignore=args.to_ignore,
                 rows=args.rows,
             )
-        finally:
-            cursor.connection.close()
 
         frequency_grid.removeTier("Lemma")
 
-        name = file.replace(".allignment.TextGrid", ".frequencies.TextGrid")
+        name = str(file).replace(".allignment.TextGrid", ".frequencies.TextGrid")
         frequency_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
 

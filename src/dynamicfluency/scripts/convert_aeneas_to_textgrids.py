@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import os
-import glob
 import argparse
 
 from praatio.data_classes.textgrid import Textgrid
 
 from dynamicfluency.aeneas_conversion import aeneas_tier_from_file
+from dynamicfluency.helpers import get_local_glob
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -27,8 +27,8 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    word_allignments = glob.glob(f"./{args.directory}/*.tokens.json")
-    phrase_allignments = glob.glob(f"./{args.directory}/*.phrases.json")
+    word_allignments = get_local_glob(args.directory, glob="*.tokens.json")
+    phrase_allignments = get_local_glob(args.directory, glob="*.phrases.json")
 
     for words, phrases in zip(word_allignments, phrase_allignments):
         words_tier = aeneas_tier_from_file(words, "Words")
@@ -37,7 +37,7 @@ def main():
         allignment_grid = Textgrid()
         allignment_grid.addTier(words_tier)
         allignment_grid.addTier(phrases_tier)
-        name = words.replace(".tokens.json", ".allignment.TextGrid")
+        name = str(words).replace(".tokens.json", ".allignment.TextGrid")
         allignment_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
         os.remove(words)

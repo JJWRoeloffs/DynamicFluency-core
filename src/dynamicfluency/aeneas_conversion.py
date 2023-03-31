@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from typing import Dict, List
 
 from praatio.utilities.constants import Interval
@@ -55,11 +56,9 @@ class AeneasIntervaltier(IntervalTier):
         return cls(name=name, entryList=entryList)
 
 
-def aeneas_tier_from_file(
-    filename: str, name: str, *, force_validity: bool = True
-) -> AeneasIntervaltier:
-    with open(filename, "r") as file:
-        allignment_dict = json.load(file)
+def aeneas_tier_from_file(file: Path, name: str, *, force_validity: bool = True) -> AeneasIntervaltier:
+    with file.open("r") as f:
+        allignment_dict = json.load(f)
     return AeneasIntervaltier.from_json(
         allignment_dict, name, force_validity=force_validity
     )

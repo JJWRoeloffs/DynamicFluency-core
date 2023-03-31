@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import sqlite3
+from sqlite3 import Connection, Cursor, Row
 
 
-def connect_to_database(database_file: str) -> sqlite3.Cursor:
-    """Connects to the specifed sqlite3 database with a row-based cursor."""
-    database = sqlite3.connect(database_file)
-    database.row_factory = sqlite3.Row
-    return database.cursor()
+def get_row_cursor(connection: Connection) -> Cursor:
+    """Configures the connection to a row-based factory, and then returns the cursor
+    Modifies the connection in place.
+    """
+    connection.row_factory = Row
+    return connection.cursor()

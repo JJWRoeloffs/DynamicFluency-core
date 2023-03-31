@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import glob
 import argparse
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 
 from dynamicfluency.repetitions import make_repetitions_tier, make_freqdist_tier
+from dynamicfluency.helpers import get_local_glob
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -44,9 +44,10 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    tagged_files = glob.glob(f"./{args.directory}/*.pos_tags.TextGrid")
+    tagged_files = get_local_glob(args.directory, glob="**.pos_tags.TextGrid")
+
     for file in tagged_files:
-        tagged_grid = tg.openTextgrid(file, includeEmptyIntervals=True)
+        tagged_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
         repetition_tier = make_repetitions_tier(
             pos_tier=tagged_grid.tierDict["POStags"],
@@ -61,7 +62,7 @@ def main():
         repetition_grid.addTier(repetition_tier)
         repetition_grid.addTier(freqdist_tier)
 
-        name = file.replace(".pos_tags.TextGrid", ".repetitions.TextGrid")
+        name = str(file).replace(".pos_tags.TextGrid", ".repetitions.TextGrid")
         repetition_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
 

@@ -1,4 +1,5 @@
-from .database_extensions import connect_to_database
+from .database_extensions import get_row_cursor
+from .filepath_extensions import get_local_glob
 from .conversions import split_pos_label, pos_tier_to_lemma_tier
 from .textgridtier_extensions import (
     replace_label,
@@ -9,7 +10,8 @@ from .textgridtier_extensions import (
 )
 
 __all__ = (
-    "connect_to_database",
+    "get_row_cursor",
+    "get_local_glob",
     "split_pos_label",
     "pos_tier_to_lemma_tier",
     "replace_label",

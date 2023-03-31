@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import glob
+from pathlib import Path
 import argparse
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 
 from dynamicfluency.pos_tagging import make_pos_tier
+from dynamicfluency.helpers import get_local_glob
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -39,16 +40,17 @@ def main():
     else:
         raise ValueError(f"Unknown allignment type found: {args.allignment}")
 
-    allignment_files = glob.glob(f"./{args.directory}/*.allignment.TextGrid")
+    allignment_files = get_local_glob(args.directory, glob="*.allignment.TextGrid")
 
     for file in allignment_files:
-        allignment_grid = tg.openTextgrid(file, includeEmptyIntervals=True)
+        allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
         tagged_tier = make_pos_tier(allignment_grid.tierDict[tokentier_name])
 
         tag_grid = Textgrid()
         tag_grid.addTier(tagged_tier)
-        name = file.replace(".allignment.TextGrid", ".pos_tags.TextGrid")
+    
+        name = str(file).replace(".allignment.TextGrid", ".pos_tags.TextGrid")
         tag_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
 

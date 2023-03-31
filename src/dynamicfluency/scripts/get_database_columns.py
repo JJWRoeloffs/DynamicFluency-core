@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import os
 import csv
-import glob
 import argparse
+from pathlib import Path
+import sqlite3
 
-from praatio import textgrid as tg
-
-from dynamicfluency.helpers import connect_to_database
+from dynamicfluency.helpers import get_row_cursor
 from dynamicfluency.word_frequencies import get_column_names
 
 
@@ -42,26 +40,24 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    filepath = f"./{args.directory}/column_names.csv"
+    filepath = Path().resolve().joinpath(args.directory, "column_names.csv")
 
     # As far as I am aware, there is no good way to send an error message like this back to praat.
-    if os.path.exists(filepath):
-        print(f"{filepath} already exists")
+    if filepath.exists():
+        print(f"{str(filepath)} already exists")
         print("Cannot write anywhere.")
         return
 
-    try:
-        cursor = connect_to_database(args.database)
+    with sqlite3.connect(args.database) as connection:
+        cursor = get_row_cursor(connection)
         names = get_column_names(cursor, table_name=args.table_name)
-    finally:
-        cursor.connection.close()
 
     if not names:
         names = ["#FAIL - Incorrect table name?"]
     if not "Lemma" in names:
         names = ['#FAIL - No column "Lemma" found.']
 
-    with open(filepath, "w") as f:
+    with filepath.open("w", encoding="utf-8") as f:
         csv.writer(f).writerow(names)
 
 
