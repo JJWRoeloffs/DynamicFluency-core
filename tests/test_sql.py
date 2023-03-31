@@ -7,7 +7,7 @@ from typing import List, Dict
 from praatio import textgrid as tg
 
 from dynamicfluency.word_frequencies import *
-from dynamicfluency.helpers import connect_to_database
+from dynamicfluency.helpers import get_row_cursor
 
 
 def create_mock_database_from_file(file: str) -> sqlite3.Cursor:
@@ -36,10 +36,11 @@ class TestSQL:
         lemma = self.cursor.execute("SELECT Lemma from Mock ORDER BY Lemma").fetchone()
         assert lemma["Lemma"] == "a"
 
-    def test_connect_to_database(self):
-        cursor = connect_to_database(":memory:")
-        assert isinstance(cursor, sqlite3.Cursor)
-        assert cursor.row_factory is sqlite3.Row
+    def test_row_cursor(self):
+        with sqlite3.connect(":memory:") as connection:
+            cursor = get_row_cursor(connection)
+            assert isinstance(cursor, sqlite3.Cursor)
+            assert cursor.row_factory is sqlite3.Row
 
 
 class TestFrequencyGrid:
