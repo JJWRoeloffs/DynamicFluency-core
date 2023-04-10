@@ -5,13 +5,9 @@ from typing import List
 from dynamicfluency.repetitions import make_freqdist_tier, make_repetitions_tier
 from dynamicfluency.pos_tagging import make_pos_tier
 from dynamicfluency.helpers import pos_tier_to_word_form_tier, split_pos_label
+from dynamicfluency.data import get_valid_tags
 
 from .helpers import get_test_tier
-
-def get_valid_tags(file: Path) -> List:
-    with file.open("r") as f:
-        tags = csv.reader(f)
-        return list(*tags)
 
 
 class TestRepetitionsTier:
@@ -146,9 +142,7 @@ class TestPosTier:
             assert new.label == original.label.lower()
 
     def test_entry_pos_tags(self):
-        possible_tags = get_valid_tags(
-            Path(__file__).parent.joinpath("data", "valid_pos_tags.csv")
-        )
+        possible_tags = get_valid_tags()
         for entry in self.tier.entryList:
             tags = split_pos_label(entry.label, get_pos=True).split(" ")
             for tag in tags:
