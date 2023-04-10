@@ -1,12 +1,13 @@
-import os
 import pytest
+from pathlib import Path
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid_tier import TextgridTier
 from praatio.utilities.constants import Interval, Point
 
 from dynamicfluency.helpers import *
-from .test_tier_generation import get_test_tier
+
+from .helpers import get_test_tier
 
 
 class TestSplitLabels:
@@ -37,10 +38,10 @@ class TestSplitLabels:
 
 class TestPosTierConversion:
     original_tier = get_test_tier(
-        os.path.join("tests", "data", "testgrid_pos.TextGrid")
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
-    tier = pos_tier_to_lemma_tier(
-        get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
+    tier = pos_tier_to_word_form_tier(
+        get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid"))
     )
 
     def test_tier_length(self):
@@ -105,94 +106,81 @@ class TestReplaceLabel:
 
 
 class TestLabelsToString:
-    def test_lemma(self):
-        lemma_tier = get_test_tier(
-            os.path.join("tests", "data", "testgrid_lemma.TextGrid")
+    word_form_tier = get_test_tier(
+            Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
         )
+    pos_tier = get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid"))
+    def test_word_form(self):
+        
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList)
+            entrylist_labels_to_string(self.word_form_tier.entryList)
             == "a A aal aardvark uhm isn't BLEEH"
         )
 
-    def test_lemma_to_ignore(self):
-        lemma_tier = get_test_tier(
-            os.path.join("tests", "data", "testgrid_lemma.TextGrid")
-        )
+    def test_word_form_to_ignore(self):
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=["uhm"])
+            entrylist_labels_to_string(self.word_form_tier.entryList, to_ignore=["uhm"])
             == "a A aal aardvark isn't BLEEH"
         )
 
-    def test_converted_lemma(self):
-        lemma_tier = pos_tier_to_lemma_tier(
-            get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
-        )
+    def test_converted_word_form(self):
+        converted_word_form_tier = pos_tier_to_word_form_tier(self.pos_tier)
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList)
+            entrylist_labels_to_string(converted_word_form_tier.entryList)
             == "a a aal a uhm aal aal some some a aal"
         )
 
-    def test_converted_lemma_to_ignore(self):
-        lemma_tier = pos_tier_to_lemma_tier(
-            get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
-        )
+    def test_converted_word_form_to_ignore(self):
+        converted_word_form_tier = pos_tier_to_word_form_tier(self.pos_tier)
         assert (
-            entrylist_labels_to_string(lemma_tier.entryList, to_ignore=["uhm"])
+            entrylist_labels_to_string(converted_word_form_tier.entryList, to_ignore=["uhm"])
             == "a a aal a aal aal some some a aal"
         )
 
     def test_pos(self):
-        pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         assert (
-            entrylist_labels_to_string(pos_tier.entryList)
+            entrylist_labels_to_string(self.pos_tier.entryList)
             == "a_DT a_DT aal_JJ a_DT uhm aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
         )
 
     def test_pos_to_ignore(self):
-        pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
         assert (
-            entrylist_labels_to_string(pos_tier.entryList, to_ignore=["uhm"])
+            entrylist_labels_to_string(self.pos_tier.entryList, to_ignore=["uhm"])
             == "a_DT a_DT aal_JJ a_DT aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
         )
 
 
 class TestLowercaseEntryList:
-    def test_lemma_length(self):
-        lemma_tier = get_test_tier(
-            os.path.join("tests", "data", "testgrid_lemma.TextGrid")
-        )
-        lowercase_lemma_list = make_lowercase_entrylist(lemma_tier.entryList)
-        assert len(lowercase_lemma_list) == len(lemma_tier.entryList)
+    word_form_tier = get_test_tier(
+        Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
+    )
+    pos_tier = get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid"))
+    def test_word_form_length(self):
+        lowercase_word_form_list = make_lowercase_entrylist(self.word_form_tier.entryList)
+        assert len(lowercase_word_form_list) == len(self.word_form_tier.entryList)
 
-    def test_lemma_entries(self):
-        lemma_tier = get_test_tier(
-            os.path.join("tests", "data", "testgrid_lemma.TextGrid")
-        )
-        lowercase_lemma_list = make_lowercase_entrylist(lemma_tier.entryList)
-
-        for lowercase, normal in zip(lowercase_lemma_list, lemma_tier.entryList):
+    def test_word_form_entries(self):
+        lowercase_word_form_list = make_lowercase_entrylist(self.word_form_tier.entryList)
+        for lowercase, normal in zip(lowercase_word_form_list, self.word_form_tier.entryList):
             assert normal.label.lower() == lowercase.label
 
     def test_pos_length(self):
-        pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
-        lowercase_pos_list = make_lowercase_entrylist(pos_tier.entryList)
-        assert len(lowercase_pos_list) == len(pos_tier.entryList)
+        lowercase_pos_list = make_lowercase_entrylist(self.pos_tier.entryList)
+        assert len(lowercase_pos_list) == len(self.pos_tier.entryList)
 
-    def test_lemma_entries(self):
-        pos_tier = get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid"))
-        lowercase_pos_list = make_lowercase_entrylist(pos_tier.entryList)
-
-        for lowercase, normal in zip(lowercase_pos_list, pos_tier.entryList):
+    def test_word_form_entries(self):
+        lowercase_pos_list = make_lowercase_entrylist(self.pos_tier.entryList)
+        for lowercase, normal in zip(lowercase_pos_list, self.pos_tier.entryList):
             assert normal.label.lower() == lowercase.label
 
 
 class TestSetAllTiersStatic:
     test_grid = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_manytiers.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_manytiers.TextGrid"),
         includeEmptyIntervals=True,
     )
     original_grid = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_manytiers.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_manytiers.TextGrid"),
         includeEmptyIntervals=True,
     )
 
@@ -255,11 +243,11 @@ class TestSetAllTiersStatic:
 
 class TestSetAllTiersFromDict:
     test_grid = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_manytiers.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_manytiers.TextGrid"),
         includeEmptyIntervals=True,
     )
     original_grid = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_manytiers.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_manytiers.TextGrid"),
         includeEmptyIntervals=True,
     )
     test_dict = {
@@ -346,7 +334,6 @@ class TestSetAllTiersFromDict:
         )
         for tier_name in self.test_grid.tierDict.keys():
             entryList = self.test_grid.tierDict[tier_name].entryList
-            original_entryList = self.original_grid.tierDict[tier_name].entryList
             assert entryList[0].label == "One"
             assert entryList[1].label == " ".join(2 * [str(self.test_dict[tier_name])])
             assert entryList[2].label == "Three"
@@ -360,7 +347,6 @@ class TestSetAllTiersFromDict:
         )
         for tier_name in self.test_grid.tierDict.keys():
             entryList = self.test_grid.tierDict[tier_name].entryList
-            original_entryList = self.original_grid.tierDict[tier_name].entryList
             assert entryList[0].label == "One"
             assert entryList[1].label == " ".join(
                 2 * [str(self.test_dict_other_datatypes[tier_name])]

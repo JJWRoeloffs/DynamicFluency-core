@@ -12,7 +12,7 @@ from dynamicfluency.word_frequencies import create_frequency_grid
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description='Reads word frequencies from an SQLite3 database. Assumes lemmas are in a column called "Lemma"'
+        description='Reads word frequencies from an SQLite3 database. Assumes word_forms are in a column called "WordForm"'
     )
     requiredNamed = parser.add_argument_group("Required named arguments")
 
@@ -78,14 +78,14 @@ def main():
         with sqlite3.connect(args.database) as connection:
             cursor = get_row_cursor(connection)
             frequency_grid = create_frequency_grid(
-                lemma_tier=allignment_grid.tierDict[tokentier_name],
+                word_form_tier=allignment_grid.tierDict[tokentier_name],
                 cursor=cursor,
                 table_name=args.table_name,
                 to_ignore=args.to_ignore,
                 rows=args.rows,
             )
 
-        frequency_grid.removeTier("Lemma")
+        frequency_grid.removeTier("WordForm")
 
         name = str(file).replace(".allignment.TextGrid", ".frequencies.TextGrid")
         frequency_grid.save(name, format="long_textgrid", includeBlankSpaces=True)

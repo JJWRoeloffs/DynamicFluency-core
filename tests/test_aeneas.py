@@ -1,5 +1,5 @@
-import os
 import pytest
+from pathlib import Path
 
 from praatio.utilities.errors import TextgridStateError
 from praatio.data_classes.interval_tier import IntervalTier
@@ -8,8 +8,8 @@ from dynamicfluency.aeneas_conversion import aeneas_tier_from_file
 
 
 class TestAeneasTierFromFile:
-    bad_file = os.path.join("tests", "data", "test_aeneas_bad.json")
-    good_file = os.path.join("tests", "data", "test_aeneas_good.json")
+    bad_file = Path(__file__).parent.joinpath("data", "test_aeneas_bad.json")
+    good_file = Path(__file__).parent.joinpath("data", "test_aeneas_good.json")
 
     def test_bad_file_raises_without_force(self):
         with pytest.raises(TextgridStateError):

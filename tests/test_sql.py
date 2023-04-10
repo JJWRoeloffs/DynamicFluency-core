@@ -1,40 +1,41 @@
-import os
-import sqlite3
-import pandas
 import csv
+import sqlite3
 
+from pathlib import Path
 from typing import List, Dict
+
+import pandas
 from praatio import textgrid as tg
 
 from dynamicfluency.word_frequencies import *
 from dynamicfluency.helpers import get_row_cursor
 
 
-def create_mock_database_from_file(file: str) -> sqlite3.Cursor:
+def create_mock_database_from_file(file: Path) -> sqlite3.Cursor:
     database: sqlite3.Connection = sqlite3.connect(":memory:")
     df = pandas.DataFrame = pandas.read_csv(
-        file, sep=",", index_col="Lemma", dtype=str, engine="python"
+        file, sep=",", index_col="WordForm", dtype=str, engine="python"
     )
     df.to_sql("Mock", database)
     database.row_factory = sqlite3.Row
     return database.cursor()
 
 
-def read_mock_databse_as_csv(file: str) -> List[Dict]:
-    with open(file) as f:
+def read_mock_databse_as_csv(file: Path) -> List[Dict]:
+    with file.open("r") as f:
         return list(csv.DictReader(f))
 
 
 class TestSQL:
     cursor = create_mock_database_from_file(
-        os.path.join("tests", "data", "testlemma.csv")
+        Path(__file__).parent.joinpath("data", "test_word_form.csv")
     )
 
     def test_mock_cursor(self):
         assert isinstance(self.cursor, sqlite3.Cursor)
         assert self.cursor.row_factory is sqlite3.Row
-        lemma = self.cursor.execute("SELECT Lemma from Mock ORDER BY Lemma").fetchone()
-        assert lemma["Lemma"] == "a"
+        word_form = self.cursor.execute("SELECT WordForm from Mock ORDER BY WordForm").fetchone()
+        assert word_form["WordForm"] == "a"
 
     def test_row_cursor(self):
         with sqlite3.connect(":memory:") as connection:
@@ -44,9 +45,9 @@ class TestSQL:
 
 
 class TestFrequencyGrid:
-    data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
-    correct_lemma = [
-        "Lemma",
+    data = read_mock_databse_as_csv(Path(__file__).parent.joinpath("data", "test_word_form.csv"))
+    correct_word_form = [
+        "WordForm",
         "FREQcount",
         "CDcount",
         "FREQlow",
@@ -57,18 +58,16 @@ class TestFrequencyGrid:
         "Lg10CD",
     ]
     original_tier = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid"),
         includeEmptyIntervals=True,
     ).tierDict["TestTier"]
     grid = create_frequency_grid(
-        lemma_tier=(
-            tg.openTextgrid(
-                os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
-                includeEmptyIntervals=True,
-            ).tierDict["TestTier"]
-        ),
+        tg.openTextgrid(
+            Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid"),
+            includeEmptyIntervals=True,
+        ).tierDict["TestTier"],
         cursor=create_mock_database_from_file(
-            os.path.join("tests", "data", "testlemma.csv")
+            Path(__file__).parent.joinpath("data", "test_word_form.csv")
         ),
         table_name="Mock",
         to_ignore=["uhm", "aardvark"],
@@ -80,10 +79,10 @@ class TestFrequencyGrid:
 
     def test_tier_names(self):
         tiers = self.grid.tierDict.keys()
-        assert len(self.correct_lemma) == len(tiers)
-        for name, lemma in zip(tiers, self.correct_lemma):
+        assert len(self.correct_word_form) == len(tiers)
+        for name, word_form in zip(tiers, self.correct_word_form):
             assert isinstance(name, str)
-            assert name == lemma
+            assert name == word_form
 
     def test_grid_length(self):
         for tier_name in self.grid.tierDict.keys():
@@ -156,25 +155,25 @@ class TestFrequencyGrid:
 
 
 class TestPartialFrequencyGrid:
-    data = read_mock_databse_as_csv(os.path.join("tests", "data", "testlemma.csv"))
-    correct_lemma = ["FREQcount", "CDcount", "Lg10WF", "Lg10CD"]
+    data = read_mock_databse_as_csv(Path(__file__).parent.joinpath("data", "test_word_form.csv"))
+    correct_word_form = ["FREQcount", "CDcount", "Lg10WF", "Lg10CD"]
     original_tier = tg.openTextgrid(
-        os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
+        Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid"),
         includeEmptyIntervals=True,
     ).tierDict["TestTier"]
     grid = create_frequency_grid(
-        lemma_tier=(
+        word_form_tier=(
             tg.openTextgrid(
-                os.path.join("tests", "data", "testgrid_lemma.TextGrid"),
+                Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid"),
                 includeEmptyIntervals=True,
             ).tierDict["TestTier"]
         ),
         cursor=create_mock_database_from_file(
-            os.path.join("tests", "data", "testlemma.csv")
+            Path(__file__).parent.joinpath("data", "test_word_form.csv")
         ),
         table_name="Mock",
         to_ignore=["uhm", "aardvark"],
-        rows=correct_lemma,
+        rows=correct_word_form,
     )
 
     def test_grid_timestamps(self):
@@ -183,10 +182,10 @@ class TestPartialFrequencyGrid:
 
     def test_tier_names(self):
         tiers = self.grid.tierDict.keys()
-        assert len(self.correct_lemma) == len(tiers)
-        for name, lemma in zip(tiers, self.correct_lemma):
+        assert len(self.correct_word_form) == len(tiers)
+        for name, word_form in zip(tiers, self.correct_word_form):
             assert isinstance(name, str)
-            assert name == lemma
+            assert name == word_form
 
     def test_grid_length(self):
         for tier_name in self.grid.tierDict.keys():

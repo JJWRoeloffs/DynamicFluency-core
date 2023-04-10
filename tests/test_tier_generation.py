@@ -1,33 +1,25 @@
-import os
 import csv
+from pathlib import Path
 from typing import List
-from itertools import chain
-
-from praatio import textgrid as tg
-from praatio.data_classes.textgrid_tier import TextgridTier
 
 from dynamicfluency.repetitions import make_freqdist_tier, make_repetitions_tier
 from dynamicfluency.pos_tagging import make_pos_tier
-from dynamicfluency.helpers import pos_tier_to_lemma_tier, split_pos_label
+from dynamicfluency.helpers import pos_tier_to_word_form_tier, split_pos_label
 
+from .helpers import get_test_tier
 
-def get_test_tier(file: str) -> TextgridTier:
-    grid = tg.openTextgrid(file, includeEmptyIntervals=True)
-    return grid.tierDict["TestTier"]
-
-
-def get_valid_tags(file: str) -> List:
-    with open(file, "r") as f:
+def get_valid_tags(file: Path) -> List:
+    with file.open("r") as f:
         tags = csv.reader(f)
         return list(*tags)
 
 
 class TestRepetitionsTier:
     original_tier = get_test_tier(
-        os.path.join("tests", "data", "testgrid_pos.TextGrid")
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_repetitions_tier(
-        pos_tier=get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid")),
+        pos_tier=get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")),
         max_cache=5,
         to_ignore=["uhm"],
     )
@@ -83,10 +75,10 @@ class TestRepetitionsTier:
 
 class TestFreqdistTier:
     original_tier = get_test_tier(
-        os.path.join("tests", "data", "testgrid_pos.TextGrid")
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_freqdist_tier(
-        pos_tier=get_test_tier(os.path.join("tests", "data", "testgrid_pos.TextGrid")),
+        pos_tier=get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")),
         to_ignore=["uhm"],
     )
 
@@ -130,10 +122,10 @@ class TestFreqdistTier:
 
 class TestPosTier:
     original_tier = get_test_tier(
-        os.path.join("tests", "data", "testgrid_lemma.TextGrid")
+        Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
     )
     tier = make_pos_tier(
-        get_test_tier(os.path.join("tests", "data", "testgrid_lemma.TextGrid")),
+        get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")),
     )
 
     def test_tier_length(self):
@@ -148,14 +140,14 @@ class TestPosTier:
             assert new.start == original.start
             assert new.end == original.end
 
-    def test_lemma_preservation_as_lowercase(self):
-        lemmas = pos_tier_to_lemma_tier(self.tier)
-        for new, original in zip(lemmas.entryList, self.original_tier.entryList):
+    def test_word_form_preservation_as_lowercase(self):
+        word_forms = pos_tier_to_word_form_tier(self.tier)
+        for new, original in zip(word_forms.entryList, self.original_tier.entryList):
             assert new.label == original.label.lower()
 
     def test_entry_pos_tags(self):
         possible_tags = get_valid_tags(
-            os.path.join("tests", "data", "valid_pos_tags.csv")
+            Path(__file__).parent.joinpath("data", "valid_pos_tags.csv")
         )
         for entry in self.tier.entryList:
             tags = split_pos_label(entry.label, get_pos=True).split(" ")

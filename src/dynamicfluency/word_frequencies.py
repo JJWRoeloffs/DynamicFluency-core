@@ -37,15 +37,15 @@ def make_empty_frequency_grid(
 
 
 def set_labels_from_db(
-    *, cursor: sqlite3.Cursor, grid: Textgrid, table_name: str, lemma: str, index: int
+    *, cursor: sqlite3.Cursor, grid: Textgrid, table_name: str, word_form: str, index: int
 ) -> None:
     """Sets the tiers of a textgrid with one tier for every databse column to their respecive entries at an index"""
-    lemma_parts = lemma.split("'")
+    word_form_parts = word_form.split("'")
     set_all_tiers_static(grid, item="", index=index)
 
-    for part in lemma_parts:
+    for part in word_form_parts:
         cursor.execute(
-            f"SELECT DISTINCT * FROM {table_name} WHERE LOWER(Lemma) LIKE LOWER((?));",
+            f"SELECT DISTINCT * FROM {table_name} WHERE LOWER(WordForm) LIKE LOWER((?));",
             [part],
         )
 
@@ -59,7 +59,7 @@ def set_labels_from_db(
 
 
 def create_frequency_grid(
-    lemma_tier: TextgridTier,
+    word_form_tier: TextgridTier,
     *,
     cursor: sqlite3.Cursor,
     table_name: str,
@@ -70,10 +70,10 @@ def create_frequency_grid(
     to_ignore = [] if to_ignore is None else to_ignore
 
     frequency_grid = make_empty_frequency_grid(
-        cursor=cursor, table_name=table_name, base_tier=lemma_tier, rows=rows
+        cursor=cursor, table_name=table_name, base_tier=word_form_tier, rows=rows
     )
 
-    for i, entry in enumerate(lemma_tier.entryList):
+    for i, entry in enumerate(word_form_tier.entryList):
         if (not entry.label) or (entry.label in to_ignore):
             set_all_tiers_static(frequency_grid, item="", index=i)
         else:
@@ -81,7 +81,7 @@ def create_frequency_grid(
                 cursor=cursor,
                 grid=frequency_grid,
                 table_name=table_name,
-                lemma=entry.label,
+                word_form=entry.label,
                 index=i,
             )
 

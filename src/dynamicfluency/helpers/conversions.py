@@ -8,7 +8,7 @@ from .textgridtier_extensions import replace_label
 
 
 def split_pos_label(pos_label: str, *, get_pos: bool = False) -> str:
-    """The lemma split from the full POS tag label.
+    """The word_form split from the full POS tag label.
     This label can have multiple words causing complication.
     It determines the splits by "_" and " ", the form "part_tag part_tag part_tag"
     Example:
@@ -23,14 +23,14 @@ def split_pos_label(pos_label: str, *, get_pos: bool = False) -> str:
     join = " " if get_pos else ""
 
     split = pos_label.split("_")
-    lemmas_and_tags = chain(*[lemma.split(" ") for lemma in split])
-    lemmas = [lemma for i, lemma in enumerate(lemmas_and_tags) if (i % 2) == index]
-    return join.join(lemmas)
+    word_forms_and_tags = chain(*[word_form.split(" ") for word_form in split])
+    word_forms = [word_form for i, word_form in enumerate(word_forms_and_tags) if (i % 2) == index]
+    return join.join(word_forms)
 
 
-def pos_tier_to_lemma_tier(
-    pos_tier: TextgridTier, name: str = "Lemmas"
+def pos_tier_to_word_form_tier(
+    pos_tier: TextgridTier, name: str = "WordForms"
 ) -> TextgridTier:
-    """Makes a lemma tier out of a pos_tagging made pos_tier"""
-    lemma_list = [replace_label(entry, split_pos_label) for entry in pos_tier.entryList]
-    return pos_tier.new(name=name, entryList=lemma_list)
+    """Makes a word_form tier out of a pos_tagging made pos_tier"""
+    word_form_list = [replace_label(entry, split_pos_label) for entry in pos_tier.entryList]
+    return pos_tier.new(name=name, entryList=word_form_list)

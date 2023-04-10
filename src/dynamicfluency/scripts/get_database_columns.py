@@ -54,8 +54,8 @@ def main():
 
     if not names:
         names = ["#FAIL - Incorrect table name?"]
-    if not "Lemma" in names:
-        names = ['#FAIL - No column "Lemma" found.']
+    if not "WordForm" in names:
+        names = ['#FAIL - No column "WordForm" found.']
 
     with filepath.open("w", encoding="utf-8") as f:
         csv.writer(f).writerow(names)
