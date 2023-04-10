@@ -25,7 +25,8 @@ def make_empty_frequency_grid(
 ) -> Textgrid:
     """Makes an "empty" frequency grid.
     This is a grid that has all the tiers initialised according to the column names of the databse,
-    but does not have any values in those tiers, all of them being copies from the base."""
+    but does not have any values in those tiers, all of them being copies from the base.
+    """
     if rows is None:
         rows = get_column_names(cursor, table_name=table_name)
     frequency_grid = Textgrid()

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 
+
 def get_local_glob(*paths: str, glob: str) -> List[Path]:
     """small helper function to not have to repeat this over and over again.
 

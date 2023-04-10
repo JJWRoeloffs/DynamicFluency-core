@@ -10,7 +10,6 @@ from dynamicfluency.helpers import entrylist_labels_to_string, make_lowercase_en
 
 
 def generate_tags_from_entrylist(entryList: List[namedtuple]) -> List[Union[str, str]]:
-
     text = entrylist_labels_to_string(entryList)
     tokens: List[str] = nltk.word_tokenize(text)
     return nltk.pos_tag(tokens)

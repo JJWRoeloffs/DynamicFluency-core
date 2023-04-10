@@ -56,7 +56,9 @@ class AeneasIntervaltier(IntervalTier):
         return cls(name=name, entryList=entryList)
 
 
-def aeneas_tier_from_file(file: Path, name: str, *, force_validity: bool = True) -> AeneasIntervaltier:
+def aeneas_tier_from_file(
+    file: Path, name: str, *, force_validity: bool = True
+) -> AeneasIntervaltier:
     with file.open("r") as f:
         allignment_dict = json.load(f)
     return AeneasIntervaltier.from_json(

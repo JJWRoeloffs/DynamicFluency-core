@@ -49,7 +49,7 @@ def main():
 
         tag_grid = Textgrid()
         tag_grid.addTier(tagged_tier)
-    
+
         name = str(file).replace(".allignment.TextGrid", ".pos_tags.TextGrid")
         tag_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 

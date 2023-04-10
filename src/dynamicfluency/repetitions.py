@@ -18,7 +18,6 @@ def make_repetitions_tier(
     to_ignore: List[str] = [],
     name: str = "Repetitions",
 ) -> TextgridTier:
-
     cache = []
     repetitions_list = []
 
