@@ -6,6 +6,7 @@ from typing import List, Dict
 
 import pandas
 from praatio import textgrid as tg
+from praatio.utilities.constants import INTERVAL_TIER
 
 from dynamicfluency.word_frequencies import *
 from dynamicfluency.helpers import get_row_cursor
@@ -76,6 +77,10 @@ class TestFrequencyGrid:
         table_name="Mock",
         to_ignore=["uhm", "aardvark"],
     )
+
+    def test_tiers_type(self):
+        for tier_name in self.grid.tierDict.keys():
+            assert self.grid.tierDict[tier_name].tierType == INTERVAL_TIER
 
     def test_grid_timestamps(self):
         assert self.grid.minTimestamp == self.original_tier.minTimestamp == 0

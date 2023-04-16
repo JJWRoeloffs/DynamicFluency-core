@@ -24,6 +24,9 @@ class TestRepetitionsTier:
         to_ignore=["uhm"],
     )
 
+    def test_tier_type(self):
+        assert self.tier.tierType == INTERVAL_TIER
+
     def test_tier_length(self):
         assert len(self.tier.entryList) == len(self.original_tier.entryList)
 
@@ -82,6 +85,9 @@ class TestFreqdistTier:
         to_ignore=["uhm"],
     )
 
+    def test_tier_type(self):
+        assert self.tier.tierType == INTERVAL_TIER
+
     def test_tier_length(self):
         assert len(self.tier.entryList) == len(self.original_tier.entryList)
 
@@ -127,6 +133,9 @@ class TestPosTier:
     )
     tier = make_pos_tier(original_tier)
 
+    def test_tier_type(self):
+        assert self.tier.tierType == INTERVAL_TIER
+        
     def test_tier_length(self):
         assert len(self.tier.entryList) == len(self.original_tier.entryList)
 
