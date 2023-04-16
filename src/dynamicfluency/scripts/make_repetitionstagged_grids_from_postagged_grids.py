@@ -5,6 +5,7 @@ import argparse
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
+from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.repetitions import make_repetitions_tier, make_freqdist_tier
 from dynamicfluency.helpers import get_local_glob
@@ -49,13 +50,16 @@ def main():
     for file in tagged_files:
         tagged_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
+        if not isinstance(tier := tagged_grid.tierDict["POStags"], IntervalTier):
+            raise ValueError("Cannot read POStags: Not an interval tier")
+
         repetition_tier = make_repetitions_tier(
-            pos_tier=tagged_grid.tierDict["POStags"],
+            pos_tier=tier,
             max_cache=args.max_read,
             to_ignore=args.to_ignore,
         )
         freqdist_tier = make_freqdist_tier(
-            pos_tier=tagged_grid.tierDict["POStags"], to_ignore=args.to_ignore
+            pos_tier=tier, to_ignore=args.to_ignore
         )
 
         repetition_grid = Textgrid()

@@ -28,12 +28,12 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    allignment_files = get_local_glob(args.directory, glob="*.pos_tags.TextGrid")
+    tagged_files = get_local_glob(args.directory, glob="*.pos_tags.TextGrid")
 
-    for file in allignment_files:
-        allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
+    for file in tagged_files:
+        tagged_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
-        if not isinstance(tier := allignment_grid.tierDict["POStags"], IntervalTier):
+        if not isinstance(tier := tagged_grid.tierDict["POStags"], IntervalTier):
             raise ValueError("Cannot read POStags: Not an interval tier")
 
         syntax_grid = make_syntax_grid(pos_tier=tier)

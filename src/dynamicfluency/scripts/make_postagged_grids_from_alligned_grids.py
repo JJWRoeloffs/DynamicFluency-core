@@ -6,6 +6,7 @@ import argparse
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
+from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.pos_tagging import make_pos_tier
 from dynamicfluency.helpers import get_local_glob
@@ -44,8 +45,11 @@ def main():
 
     for file in allignment_files:
         allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
+        
+        if not isinstance(tier := allignment_grid.tierDict[tokentier_name], IntervalTier):
+            raise ValueError("Cannot read Allignment: Not an interval tier")
 
-        tagged_tier = make_pos_tier(allignment_grid.tierDict[tokentier_name])
+        tagged_tier = make_pos_tier(tier)
 
         tag_grid = Textgrid()
         tag_grid.addTier(tagged_tier)

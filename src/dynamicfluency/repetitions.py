@@ -3,18 +3,18 @@ from __future__ import annotations
 from typing import List
 
 import nltk
-from praatio.data_classes.textgrid_tier import TextgridTier
+from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.helpers import entrylist_labels_to_string, split_pos_label
 
 
 def make_repetitions_tier(
-    pos_tier: TextgridTier,
+    pos_tier: IntervalTier,
     *,
     max_cache: int = 100,
     to_ignore: List[str] = [],
     name: str = "Repetitions",
-) -> TextgridTier:
+) -> IntervalTier:
     cache = []
     repetitions_list = []
 
@@ -42,8 +42,8 @@ def make_repetitions_tier(
 
 
 def make_freqdist_tier(
-    pos_tier: TextgridTier, *, to_ignore: List[str] = [], name: str = "FreqDist"
-) -> TextgridTier:
+    pos_tier: IntervalTier, *, to_ignore: List[str] = [], name: str = "FreqDist"
+) -> IntervalTier:
     nltk.download("punkt", quiet=True, halt_on_error=True)
 
     processed_entryList = [

@@ -5,6 +5,7 @@ import argparse
 import sqlite3
 
 from praatio import textgrid as tg
+from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.helpers import get_row_cursor, get_local_glob
 from dynamicfluency.word_frequencies import create_frequency_grid
@@ -75,10 +76,13 @@ def main():
     for file in allignment_files:
         allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
+        if not isinstance(tier := allignment_grid.tierDict[tokentier_name], IntervalTier):
+            raise ValueError("Cannot read Allignment: Not an interval tier")
+
         with sqlite3.connect(args.database) as connection:
             cursor = get_row_cursor(connection)
             frequency_grid = create_frequency_grid(
-                word_form_tier=allignment_grid.tierDict[tokentier_name],
+                word_form_tier=tier,
                 cursor=cursor,
                 table_name=args.table_name,
                 to_ignore=args.to_ignore,

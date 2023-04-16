@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
-from praatio.data_classes.textgrid_tier import TextgridTier
+from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.helpers import (
     set_all_tiers_static,
@@ -24,7 +24,7 @@ def make_empty_frequency_grid(
     *,
     cursor: sqlite3.Cursor,
     table_name: str,
-    base_tier: TextgridTier,
+    base_tier: IntervalTier,
     rows: Optional[List[str]] = None,
 ) -> Textgrid:
     """Makes an "empty" frequency grid.
@@ -68,7 +68,7 @@ def set_labels_from_db(
 
 
 def create_frequency_grid(
-    word_form_tier: TextgridTier,
+    word_form_tier: IntervalTier,
     *,
     cursor: sqlite3.Cursor,
     table_name: str,
