@@ -34,7 +34,9 @@ class TestSQL:
     def test_mock_cursor(self):
         assert isinstance(self.cursor, sqlite3.Cursor)
         assert self.cursor.row_factory is sqlite3.Row
-        word_form = self.cursor.execute("SELECT WordForm from Mock ORDER BY WordForm").fetchone()
+        word_form = self.cursor.execute(
+            "SELECT WordForm from Mock ORDER BY WordForm"
+        ).fetchone()
         assert word_form["WordForm"] == "a"
 
     def test_row_cursor(self):
@@ -45,7 +47,9 @@ class TestSQL:
 
 
 class TestFrequencyGrid:
-    data = read_mock_databse_as_csv(Path(__file__).parent.joinpath("data", "test_word_form.csv"))
+    data = read_mock_databse_as_csv(
+        Path(__file__).parent.joinpath("data", "test_word_form.csv")
+    )
     correct_word_form = [
         "WordForm",
         "FREQcount",
@@ -155,7 +159,9 @@ class TestFrequencyGrid:
 
 
 class TestPartialFrequencyGrid:
-    data = read_mock_databse_as_csv(Path(__file__).parent.joinpath("data", "test_word_form.csv"))
+    data = read_mock_databse_as_csv(
+        Path(__file__).parent.joinpath("data", "test_word_form.csv")
+    )
     correct_word_form = ["FREQcount", "CDcount", "Lg10WF", "Lg10CD"]
     original_tier = tg.openTextgrid(
         Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid"),

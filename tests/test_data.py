@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dynamicfluency.data import DATAFILE, get_valid_tags
 
+
 class TestDataFile:
     def test_data_files(self):
         assert isinstance(DATAFILE, Path)

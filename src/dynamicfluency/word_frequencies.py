@@ -37,7 +37,12 @@ def make_empty_frequency_grid(
 
 
 def set_labels_from_db(
-    *, cursor: sqlite3.Cursor, grid: Textgrid, table_name: str, word_form: str, index: int
+    *,
+    cursor: sqlite3.Cursor,
+    grid: Textgrid,
+    table_name: str,
+    word_form: str,
+    index: int,
 ) -> None:
     """Sets the tiers of a textgrid with one tier for every databse column to their respecive entries at an index"""
     word_form_parts = word_form.split("'")

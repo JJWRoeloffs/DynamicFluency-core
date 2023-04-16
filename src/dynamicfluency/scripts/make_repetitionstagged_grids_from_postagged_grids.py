@@ -44,7 +44,7 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    tagged_files = get_local_glob(args.directory, glob="**.pos_tags.TextGrid")
+    tagged_files = get_local_glob(args.directory, glob="*.pos_tags.TextGrid")
 
     for file in tagged_files:
         tagged_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)

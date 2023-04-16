@@ -15,7 +15,9 @@ class TestRepetitionsTier:
         Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_repetitions_tier(
-        pos_tier=get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")),
+        pos_tier=get_test_tier(
+            Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
+        ),
         max_cache=5,
         to_ignore=["uhm"],
     )
@@ -74,7 +76,9 @@ class TestFreqdistTier:
         Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_freqdist_tier(
-        pos_tier=get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")),
+        pos_tier=get_test_tier(
+            Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
+        ),
         to_ignore=["uhm"],
     )
 
@@ -121,7 +125,9 @@ class TestPosTier:
         Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
     )
     tier = make_pos_tier(
-        get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")),
+        get_test_tier(
+            Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
+        ),
     )
 
     def test_tier_length(self):
