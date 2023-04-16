@@ -2,12 +2,18 @@ import pytest
 from pathlib import Path
 
 from praatio import textgrid as tg
-from praatio.data_classes.textgrid_tier import TextgridTier
 from praatio.utilities.constants import Interval, Point
 
 from dynamicfluency.helpers import *
 
 from .helpers import get_test_tier
+
+
+class TestMidpoint:
+    def test_midpoint(self):
+        assert get_midpoint(Interval(start=0, end=1, label="")) == 0.5
+        assert get_midpoint(Interval(start=1, end=2, label="")) == 1.5
+        assert get_midpoint(Interval(start=2, end=3, label="")) == 2.5
 
 
 class TestSplitLabels:
@@ -107,11 +113,13 @@ class TestReplaceLabel:
 
 class TestLabelsToString:
     word_form_tier = get_test_tier(
-            Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
-        )
-    pos_tier = get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid"))
+        Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
+    )
+    pos_tier = get_test_tier(
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
+    )
+
     def test_word_form(self):
-        
         assert (
             entrylist_labels_to_string(self.word_form_tier.entryList)
             == "a A aal aardvark uhm isn't BLEEH"
@@ -133,7 +141,9 @@ class TestLabelsToString:
     def test_converted_word_form_to_ignore(self):
         converted_word_form_tier = pos_tier_to_word_form_tier(self.pos_tier)
         assert (
-            entrylist_labels_to_string(converted_word_form_tier.entryList, to_ignore=["uhm"])
+            entrylist_labels_to_string(
+                converted_word_form_tier.entryList, to_ignore=["uhm"]
+            )
             == "a a aal a aal aal some some a aal"
         )
 
@@ -154,14 +164,23 @@ class TestLowercaseEntryList:
     word_form_tier = get_test_tier(
         Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
     )
-    pos_tier = get_test_tier(Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid"))
+    pos_tier = get_test_tier(
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
+    )
+
     def test_word_form_length(self):
-        lowercase_word_form_list = make_lowercase_entrylist(self.word_form_tier.entryList)
+        lowercase_word_form_list = make_lowercase_entrylist(
+            self.word_form_tier.entryList
+        )
         assert len(lowercase_word_form_list) == len(self.word_form_tier.entryList)
 
     def test_word_form_entries(self):
-        lowercase_word_form_list = make_lowercase_entrylist(self.word_form_tier.entryList)
-        for lowercase, normal in zip(lowercase_word_form_list, self.word_form_tier.entryList):
+        lowercase_word_form_list = make_lowercase_entrylist(
+            self.word_form_tier.entryList
+        )
+        for lowercase, normal in zip(
+            lowercase_word_form_list, self.word_form_tier.entryList
+        ):
             assert normal.label.lower() == lowercase.label
 
     def test_pos_length(self):

@@ -4,11 +4,17 @@ from typing import Callable, List, Dict
 from collections import namedtuple
 
 from praatio.data_classes.textgrid import Textgrid
+from praatio.utilities.constants import Interval
 
 
 def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
     """Returns a new namedtuple with the "label" attribute changed according to passed function."""
     return entry._replace(label=f(entry.label))
+
+
+def get_midpoint(interval: Interval) -> float:
+    return (interval.start + interval.end) / 2
+
 
 
 def entrylist_labels_to_string(
