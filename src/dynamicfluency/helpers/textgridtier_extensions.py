@@ -16,7 +16,6 @@ def get_midpoint(interval: Interval) -> float:
     return (interval.start + interval.end) / 2
 
 
-
 def entrylist_labels_to_string(
     entryList: List[namedtuple], *, to_ignore: List[str] = []
 ) -> str:
@@ -26,7 +25,8 @@ def entrylist_labels_to_string(
         [
             entry.label
             for entry in entryList
-            if entry.label and (not entry.label in to_ignore)
+            if entry.label
+            if not entry.label in to_ignore
         ]
     )
 

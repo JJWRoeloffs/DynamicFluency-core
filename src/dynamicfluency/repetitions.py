@@ -5,7 +5,7 @@ from typing import List
 import nltk
 from praatio.data_classes.textgrid_tier import TextgridTier
 
-from dynamicfluency.helpers import entrylist_labels_to_string
+from dynamicfluency.helpers import entrylist_labels_to_string, split_pos_label
 
 
 def make_repetitions_tier(
@@ -19,7 +19,11 @@ def make_repetitions_tier(
     repetitions_list = []
 
     for entry in pos_tier.entryList:
-        if (not entry.label) or (entry.label in to_ignore):
+        if (
+            (not entry.label)
+            or (entry.label in to_ignore)
+            or (split_pos_label(entry.label) in to_ignore)
+        ):
             repetitions_list.append(entry)
             continue
 
@@ -42,12 +46,24 @@ def make_freqdist_tier(
 ) -> TextgridTier:
     nltk.download("punkt", quiet=True, halt_on_error=True)
 
-    text = entrylist_labels_to_string(pos_tier.entryList, to_ignore=to_ignore)
-    fdist = nltk.FreqDist(nltk.word_tokenize(text))
+    processed_entryList = [
+        interval
+        for interval in pos_tier.entryList
+        if interval.label
+        if not interval.label in to_ignore
+        if not split_pos_label(interval.label) in to_ignore
+    ]
+
+    text = entrylist_labels_to_string(processed_entryList)
+    fdist = nltk.FreqDist(text.split())
     freqdist_list = []
 
     for entry in pos_tier.entryList:
-        if (not entry.label) or (entry.label in to_ignore):
+        if (
+            (not entry.label)
+            or (entry.label in to_ignore)
+            or (split_pos_label(entry.label) in to_ignore)
+        ):
             freqdist_list.append(entry)
             continue
 

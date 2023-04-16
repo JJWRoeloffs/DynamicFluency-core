@@ -1,6 +1,4 @@
-import csv
 from pathlib import Path
-from typing import List
 
 from dynamicfluency.repetitions import make_freqdist_tier, make_repetitions_tier
 from dynamicfluency.pos_tagging import make_pos_tier
@@ -15,9 +13,7 @@ class TestRepetitionsTier:
         Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_repetitions_tier(
-        pos_tier=get_test_tier(
-            Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
-        ),
+        pos_tier=original_tier,
         max_cache=5,
         to_ignore=["uhm"],
     )
@@ -50,7 +46,7 @@ class TestRepetitionsTier:
 
     def test_ignored_ignored(self):
         # text = "uhm" // in to_ignore
-        assert self.tier.entryList[4].label == "uhm"
+        assert self.tier.entryList[4].label == "uhm_IN"
 
     def test_ignored_skipped_over(self):
         # text = "aal_JJ" // 2 in between, but 1 of those in to_ignore.
@@ -76,9 +72,7 @@ class TestFreqdistTier:
         Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
     tier = make_freqdist_tier(
-        pos_tier=get_test_tier(
-            Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
-        ),
+        pos_tier=original_tier,
         to_ignore=["uhm"],
     )
 
@@ -96,6 +90,7 @@ class TestFreqdistTier:
 
     def test_regular_tier(self):
         # text = "a_DT"
+        print(len(self.tier.entryList))
 
         assert self.tier.entryList[0].label == "0.4"
         # text = "a_DT"
@@ -113,7 +108,7 @@ class TestFreqdistTier:
 
     def test_ignored_ignored(self):
         # text = "uhm" // in to_ignore
-        assert self.tier.entryList[4].label == "uhm"
+        assert self.tier.entryList[4].label == "uhm_IN"
 
     def test_empty_ignored(self):
         # text = ""
@@ -124,11 +119,7 @@ class TestPosTier:
     original_tier = get_test_tier(
         Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
     )
-    tier = make_pos_tier(
-        get_test_tier(
-            Path(__file__).parent.joinpath("data", "testgrid_word_form.TextGrid")
-        ),
-    )
+    tier = make_pos_tier(original_tier)
 
     def test_tier_length(self):
         assert len(self.tier.entryList) == len(self.original_tier.entryList)

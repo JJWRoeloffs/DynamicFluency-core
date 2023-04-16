@@ -1,4 +1,3 @@
-import pytest
 from pathlib import Path
 
 from praatio import textgrid as tg
@@ -150,13 +149,14 @@ class TestLabelsToString:
     def test_pos(self):
         assert (
             entrylist_labels_to_string(self.pos_tier.entryList)
-            == "a_DT a_DT aal_JJ a_DT uhm aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
+            == "a_DT a_DT aal_JJ a_DT uhm_IN aal_JJ aal_JJ some_JJ some_WP$ a_DT aal_JJ"
         )
 
     def test_pos_to_ignore(self):
+        # This function, unlike other higher-level functions does not take into account POS tags for to_ignore.
         assert (
-            entrylist_labels_to_string(self.pos_tier.entryList, to_ignore=["uhm"])
-            == "a_DT a_DT aal_JJ a_DT aal_JJ aal_JJ some_JJ some_NV a_DT aal_JJ"
+            entrylist_labels_to_string(self.pos_tier.entryList, to_ignore=["uhm_IN"])
+            == "a_DT a_DT aal_JJ a_DT aal_JJ aal_JJ some_JJ some_WP$ a_DT aal_JJ"
         )
 
 

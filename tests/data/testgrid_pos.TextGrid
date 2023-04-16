@@ -31,7 +31,7 @@ item []:
         intervals [5]:
             xmin = 5.88 
             xmax = 6.2 
-            text = "uhm" 
+            text = "uhm_IN" 
         intervals [6]:
             xmin = 6.2 
             xmax = 7.1 
@@ -51,7 +51,7 @@ item []:
         intervals [10]:
             xmin = 8.5 
             xmax = 8.8 
-            text = "some_NV"           
+            text = "some_WP$"           
         intervals [11]:
             xmin = 8.8 
             xmax = 8.9 

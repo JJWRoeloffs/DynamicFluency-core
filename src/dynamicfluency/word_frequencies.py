@@ -7,7 +7,11 @@ from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 from praatio.data_classes.textgrid_tier import TextgridTier
 
-from dynamicfluency.helpers import set_all_tiers_static, set_all_tiers_from_dict
+from dynamicfluency.helpers import (
+    set_all_tiers_static,
+    set_all_tiers_from_dict,
+    split_pos_label,
+)
 
 
 def get_column_names(cursor: sqlite3.Cursor, *, table_name: str) -> List[str]:
@@ -79,7 +83,11 @@ def create_frequency_grid(
     )
 
     for i, entry in enumerate(word_form_tier.entryList):
-        if (not entry.label) or (entry.label in to_ignore):
+        if (
+            (not entry.label)
+            or (entry.label in to_ignore)
+            or (split_pos_label(entry.label) in to_ignore)
+        ):
             set_all_tiers_static(frequency_grid, item="", index=i)
         else:
             set_labels_from_db(
