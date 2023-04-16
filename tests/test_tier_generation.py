@@ -1,7 +1,13 @@
 from pathlib import Path
 
+from praatio.utilities.constants import (
+    INTERVAL_TIER,
+    POINT_TIER,
+)
+
 from dynamicfluency.repetitions import make_freqdist_tier, make_repetitions_tier
 from dynamicfluency.pos_tagging import make_pos_tier
+from dynamicfluency.syntactic_analysis import make_syntax_grid
 from dynamicfluency.helpers import pos_tier_to_word_form_tier, split_pos_label
 from dynamicfluency.data import get_valid_tags
 
@@ -144,3 +150,21 @@ class TestPosTier:
             tags = split_pos_label(entry.label, get_pos=True).split(" ")
             for tag in tags:
                 assert tag in possible_tags or entry.label == ""
+
+
+class TestSyntaxGrid:
+    original_tier = get_test_tier(
+        Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
+    )
+    grid = make_syntax_grid(original_tier)
+    tier_phrase = grid.tierDict["Syntactic Phrases"]
+    tier_clause = grid.tierDict["Syntactic Clauses"]
+
+    def test_timestamps(self):
+        for tier in (self.tier_phrase, self.tier_clause):
+            assert tier.minTimestamp == self.original_tier.minTimestamp == 0
+            assert tier.maxTimestamp == self.original_tier.maxTimestamp == 9.1
+
+    def test_is_point(self):
+        for tier in (self.tier_phrase, self.tier_clause):
+            assert tier.tierType == POINT_TIER
