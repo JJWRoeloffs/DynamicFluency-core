@@ -63,7 +63,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     args = parser.parse_args()
 
-    if args.table_name == "default":
+    if args.table_name.lower() == "default":
         parser.error(
             "Table name cannot be 'default'. This would cause naming conflicts"
         )
