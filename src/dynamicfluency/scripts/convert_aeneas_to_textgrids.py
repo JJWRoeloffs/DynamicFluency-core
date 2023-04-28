@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 import argparse
+from pathlib import Path
 
 from praatio.data_classes.textgrid import Textgrid
 
@@ -21,7 +22,12 @@ def parse_arguments() -> argparse.Namespace:
         default="output",
         help="The directory the tokens and phases is expected in, and the output is saved to",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
+    return args
 
 
 def main():

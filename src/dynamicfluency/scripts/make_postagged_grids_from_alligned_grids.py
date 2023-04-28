@@ -28,7 +28,13 @@ def parse_arguments() -> argparse.Namespace:
         "--allignment",
         help="The type of allignment textgrid, either 'maus' or 'aeneas'",
     )
-    return parser.parse_args()
+
+    args = parser.parse_args()
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
+    return args
 
 
 def main():
@@ -45,8 +51,10 @@ def main():
 
     for file in allignment_files:
         allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
-        
-        if not isinstance(tier := allignment_grid.tierDict[tokentier_name], IntervalTier):
+
+        if not isinstance(
+            tier := allignment_grid.tierDict[tokentier_name], IntervalTier
+        ):
             raise ValueError("Cannot read Allignment: Not an interval tier")
 
         tagged_tier = make_pos_tier(tier)

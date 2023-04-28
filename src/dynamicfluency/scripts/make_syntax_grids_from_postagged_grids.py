@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from praatio import textgrid as tg
 from praatio.data_classes.interval_tier import IntervalTier
@@ -22,7 +23,12 @@ def parse_arguments() -> argparse.Namespace:
         help="The directory the tokens and phases is expected in, and the output is saved to",
     )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
+    return args
 
 
 def main():

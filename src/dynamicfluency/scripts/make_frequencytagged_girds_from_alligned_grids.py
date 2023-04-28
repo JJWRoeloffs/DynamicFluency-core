@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import sqlite3
+from pathlib import Path
 
 from praatio import textgrid as tg
 from praatio.data_classes.interval_tier import IntervalTier
@@ -58,6 +59,13 @@ def parse_arguments() -> argparse.Namespace:
     args: argparse.Namespace = parser.parse_args()
     args.to_ignore = args.to_ignore.split(",") if args.to_ignore is not None else None
     args.rows = args.rows.split(",") if args.rows else None
+
+    if not Path(args.database).exists():
+        parser.error(f"{args.database} does not exist")
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
     return args
 
 
@@ -76,7 +84,9 @@ def main():
     for file in allignment_files:
         allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
-        if not isinstance(tier := allignment_grid.tierDict[tokentier_name], IntervalTier):
+        if not isinstance(
+            tier := allignment_grid.tierDict[tokentier_name], IntervalTier
+        ):
             raise ValueError("Cannot read Allignment: Not an interval tier")
 
         with sqlite3.connect(args.database) as connection:

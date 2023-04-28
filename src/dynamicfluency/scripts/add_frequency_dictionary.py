@@ -3,8 +3,9 @@ from __future__ import annotations
 
 import argparse
 import sys
-
 import sqlite3
+from pathlib import Path
+
 import pandas
 
 
@@ -49,7 +50,20 @@ def parse_arguments() -> argparse.Namespace:
         default="fail",
         help='What to do if a table with the specified name already exists in the database. Either "fail" or "replace"',
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if args.table_name == "default":
+        parser.error(
+            "Table name cannot be 'default'. This would cause naming conflicts"
+        )
+
+    if not Path(args.database).exists():
+        parser.error(f"{args.database} does not exist")
+
+    if not Path(args.dictionary_file).exists():
+        parser.error(f"{args.dictionary_file} does not exist")
+
+    return args
 
 
 def read_file(file: str, *, sep: str = " ") -> pandas.DataFrame:

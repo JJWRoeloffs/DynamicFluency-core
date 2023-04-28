@@ -34,7 +34,16 @@ def parse_arguments() -> argparse.Namespace:
         default="output",
         help="The directory the text file is saved to.",
     )
-    return parser.parse_args()
+
+    args = parser.parse_args()
+
+    if not Path(args.database).exists():
+        parser.error(f"{args.database} does not exist")
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
+    return args
 
 
 def main():

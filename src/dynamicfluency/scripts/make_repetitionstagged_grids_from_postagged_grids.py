@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
@@ -39,6 +40,10 @@ def parse_arguments() -> argparse.Namespace:
 
     args: argparse.Namespace = parser.parse_args()
     args.to_ignore.split(",")
+
+    if not Path(args.directory).exists():
+        parser.error(f"{args.directory} does not exist")
+
     return args
 
 
@@ -58,9 +63,7 @@ def main():
             max_cache=args.max_read,
             to_ignore=args.to_ignore,
         )
-        freqdist_tier = make_freqdist_tier(
-            pos_tier=tier, to_ignore=args.to_ignore
-        )
+        freqdist_tier = make_freqdist_tier(pos_tier=tier, to_ignore=args.to_ignore)
 
         repetition_grid = Textgrid()
         repetition_grid.addTier(repetition_tier)
