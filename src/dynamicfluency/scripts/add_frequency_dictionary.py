@@ -3,10 +3,21 @@ from __future__ import annotations
 
 import argparse
 import sys
+import csv
 import sqlite3
 from pathlib import Path
 
 import pandas
+
+
+# Allow for reading very big files
+MAXSIZE = sys.maxsize
+while True:
+    try:
+        csv.field_size_limit(MAXSIZE)
+        break
+    except Exception:
+        MAXSIZE //= 2
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -57,8 +68,8 @@ def parse_arguments() -> argparse.Namespace:
             "Table name cannot be 'default'. This would cause naming conflicts"
         )
 
-    if not Path(args.database).exists():
-        parser.error(f"{args.database} does not exist")
+    if not Path(args.database_file).exists():
+        parser.error(f"{args.database_file} does not exist")
 
     if not Path(args.dictionary_file).exists():
         parser.error(f"{args.dictionary_file} does not exist")
@@ -87,19 +98,11 @@ def main():
     args: argparse.Namespace = parse_arguments()
     df: pandas.DataFrame = read_file(args.dictionary_file, sep=args.seperator)
 
-    try:
-        database: sqlite3.Connection = sqlite3.connect(args.database_file)
+    with sqlite3.connect(args.database_file) as database:
         try:
             df.to_sql(args.table_name, database, if_exists=args.if_exists)
         except ValueError as error:
             print("Cannot write to SQL Database\n", error)
-
-    except sqlite3.Error as error:
-        print("SQL Error occured - ", error)
-
-    finally:
-        if database:
-            database.close()
 
 
 if __name__ == "__main__":
