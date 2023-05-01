@@ -33,3 +33,9 @@ dependencies = {file = ["requirements.txt"]}
 [project.urls]
 "Homepage" = "https://github.com/JJWRoeloffs/bare_python_publish"
 "Bug Tracker" = "https://github.com/JJWRoeloffs/bare_python_publish/issues"
+
+[tool.pytest.ini_options]
+# Spacy uses some deprecated parts of Tensorflow
+filterwarnings = [
+    'ignore:.*U.*is deprecated:DeprecationWarning'
+]

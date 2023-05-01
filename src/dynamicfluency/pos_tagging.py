@@ -3,12 +3,11 @@ from __future__ import annotations
 from typing import List, Tuple
 
 import nltk
-import spacy
 from praatio.data_classes.interval_tier import IntervalTier
 from praatio.utilities.utils import Interval
 
 from dynamicfluency.helpers import entrylist_labels_to_string, make_lowercase_entrylist
-from dynamicfluency.languages import (
+from dynamicfluency.model_data import (
     NLTK_TAGGERS,
     SPACY_MODELS,
     assert_valid_language,

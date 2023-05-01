@@ -9,6 +9,7 @@ from praatio.data_classes.interval_tier import IntervalTier
 
 from dynamicfluency.helpers import get_local_glob
 from dynamicfluency.syntactic_analysis import make_syntax_grid
+from dynamicfluency.model_data import VALID_LANGUAGES
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -22,11 +23,25 @@ def parse_arguments() -> argparse.Namespace:
         default="output",
         help="The directory the tokens and phases is expected in, and the output is saved to",
     )
+    parser.add_argument(
+        "-l",
+        "--language",
+        help="The language to get the tagging model of",
+        choices=[x for k, v in VALID_LANGUAGES.items() for x in (k, v)],
+        nargs="?",
+        default="en",
+    )
 
     args = parser.parse_args()
 
     if not Path(args.directory).exists():
         parser.error(f"{args.directory} does not exist")
+
+    if args.language in VALID_LANGUAGES.values():
+        [args.language] = [k for k, v in VALID_LANGUAGES.items() if v == args.language]
+
+    if args.language not in VALID_LANGUAGES.keys():
+        parser.error(f"{args.language} is not a valid language")
 
     return args
 
@@ -42,7 +57,7 @@ def main():
         if not isinstance(tier := tagged_grid.tierDict["POStags"], IntervalTier):
             raise ValueError("Cannot read POStags: Not an interval tier")
 
-        syntax_grid = make_syntax_grid(pos_tier=tier)
+        syntax_grid = make_syntax_grid(pos_tier=tier, lang=args.language)
 
         name = str(file).replace(".pos_tags.TextGrid", ".syntax.TextGrid")
         syntax_grid.save(name, format="long_textgrid", includeBlankSpaces=True)

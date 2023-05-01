@@ -9,7 +9,7 @@ from dynamicfluency.repetitions import make_freqdist_tier, make_repetitions_tier
 from dynamicfluency.pos_tagging import make_pos_tier
 from dynamicfluency.syntactic_analysis import make_syntax_grid
 from dynamicfluency.helpers import pos_tier_to_word_form_tier, split_pos_label
-from dynamicfluency.data import get_valid_tags
+from dynamicfluency.model_data import get_valid_tags
 
 from .helpers import get_test_tier
 
@@ -135,7 +135,7 @@ class TestPosTier:
 
     def test_tier_type(self):
         assert self.tier.tierType == INTERVAL_TIER
-        
+
     def test_tier_length(self):
         assert len(self.tier.entryList) == len(self.original_tier.entryList)
 
@@ -154,7 +154,7 @@ class TestPosTier:
             assert new.label == original.label.lower()
 
     def test_entry_pos_tags(self):
-        possible_tags = get_valid_tags()
+        possible_tags = get_valid_tags(lang="en")
         for entry in self.tier.entryList:
             tags = split_pos_label(entry.label, get_pos=True).split(" ")
             for tag in tags:
@@ -165,7 +165,7 @@ class TestSyntaxGrid:
     original_tier = get_test_tier(
         Path(__file__).parent.joinpath("data", "testgrid_pos.TextGrid")
     )
-    grid = make_syntax_grid(original_tier)
+    grid = make_syntax_grid(original_tier, lang="en")
     tier_phrase = grid.tierDict["Syntactic Phrases"]
     tier_clause = grid.tierDict["Syntactic Clauses"]
 

@@ -7,8 +7,7 @@ import argparse
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 from praatio.data_classes.interval_tier import IntervalTier
-from spacy import language
-from dynamicfluency.languages import VALID_LANGUAGES
+from dynamicfluency.model_data import VALID_LANGUAGES
 
 from dynamicfluency.pos_tagging import make_pos_tier
 from dynamicfluency.helpers import get_local_glob

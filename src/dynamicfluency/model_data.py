@@ -1,3 +1,5 @@
+import sys
+from typing import Set
 import nltk
 import spacy
 
@@ -37,6 +39,43 @@ SPACY_MODELS = {
     "sv": "sv_core_news_sm",
 }
 
+NLTK_POS_TAGS = {
+    "CC",
+    "CD",
+    "DT",
+    "EX",
+    "FW",
+    "IN",
+    "JJ",
+    "JJR",
+    "JJS",
+    "LS",
+    "MD",
+    "NN",
+    "NNS",
+    "NNP",
+    "NNPS",
+    "PDT",
+    "WRB",
+    "WP$",
+    "WP",
+    "WDT",
+    "VBZ",
+    "VBP",
+    "VBN",
+    "VBG",
+    "VBD",
+    "VB",
+    "UH",
+    "TO",
+    "RP",
+    "RBS",
+    "RB",
+    "RBR",
+    "PRP",
+    "PRP$",
+}
+
 
 def assert_valid_language(lang: str) -> None:
     "A simple helper function to raise when non-valid language string is passed"
@@ -58,3 +97,11 @@ def load_nltk_model(model: str):
         nltk.download("averaged_perceptron_tagger_ru", quiet=True, halt_on_error=True)
     else:
         nltk.download("averaged_perceptron_tagger", quiet=True, halt_on_error=True)
+
+
+def get_valid_tags(lang: str) -> Set[str]:
+    assert_valid_language(lang)
+    if lang in NLTK_TAGGERS.keys():
+        return NLTK_POS_TAGS
+    else:
+        return {*spacy.glossary.GLOSSARY.keys()}
