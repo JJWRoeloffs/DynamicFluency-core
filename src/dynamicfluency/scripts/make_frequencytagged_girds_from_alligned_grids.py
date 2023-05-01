@@ -24,7 +24,7 @@ def parse_arguments() -> argparse.Namespace:
     requiredNamed.add_argument(
         "-a",
         "--allignment",
-        help="The type of allignment textgrid, either 'maus' or 'aeneas'",
+        help="The type of allignment textgrid, 'maus' or 'aeneas' or 'whisper'",
         required=True,
     )
 
@@ -76,6 +76,8 @@ def main():
         tokentier_name = "ORT-MAU"
     elif args.allignment == "aeneas":
         tokentier_name = "Words"
+    elif args.allignment == "whisper":
+        tokentier_name = "words_text"
     else:
         raise ValueError(f"Unknown allignment type found: {args.allignment}")
 
