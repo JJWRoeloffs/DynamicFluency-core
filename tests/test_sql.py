@@ -184,7 +184,7 @@ class TestPartialFrequencyGrid:
         ),
         table_name="Mock",
         to_ignore=["uhm", "aardvark"],
-        rows=correct_word_form,
+        columns=correct_word_form,
     )
 
     def test_grid_timestamps(self):

@@ -49,16 +49,24 @@ def parse_arguments() -> argparse.Namespace:
         help="The words to ignore and not assign any value, seperated by commas.",
     )
     parser.add_argument(
-        "-r",
-        "--rows",
+        "-c",
+        "--columns",
         nargs="?",
         default="",
-        help="The Rows to read from the database table, seperated by commas",
+        help="The Columns to read from the database table, seperated by commas",
     )
 
     args: argparse.Namespace = parser.parse_args()
+
     args.to_ignore = args.to_ignore.split(",") if args.to_ignore is not None else None
-    args.rows = args.rows.split(",") if args.rows else None
+
+    if args.columns == "DYNAMICFLUENCY-DEFAULT":
+        args.columns = None
+
+    args.columns = args.columns.split(",") if args.columns else None
+
+    if args.columns is not None and not "WordForm" in args.columns:
+        args.columns.append("WordForm")
 
     if not Path(args.database).exists():
         parser.error(f"{args.database} does not exist")
@@ -98,7 +106,7 @@ def main():
                 cursor=cursor,
                 table_name=args.table_name,
                 to_ignore=args.to_ignore,
-                rows=args.rows,
+                columns=args.columns,
             )
 
         frequency_grid.removeTier("WordForm")

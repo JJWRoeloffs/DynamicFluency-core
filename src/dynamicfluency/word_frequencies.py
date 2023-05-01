@@ -25,16 +25,16 @@ def make_empty_frequency_grid(
     cursor: sqlite3.Cursor,
     table_name: str,
     base_tier: IntervalTier,
-    rows: Optional[List[str]] = None,
+    columns: Optional[List[str]] = None,
 ) -> Textgrid:
     """Makes an "empty" frequency grid.
     This is a grid that has all the tiers initialised according to the column names of the databse,
     but does not have any values in those tiers, all of them being copies from the base.
     """
-    if rows is None:
-        rows = get_column_names(cursor, table_name=table_name)
+    if columns is None:
+        columns = get_column_names(cursor, table_name=table_name)
     frequency_grid = Textgrid()
-    for name in rows:
+    for name in columns:
         tier = base_tier.new(name=name)
         frequency_grid.addTier(tier)
     return frequency_grid
@@ -73,13 +73,13 @@ def create_frequency_grid(
     cursor: sqlite3.Cursor,
     table_name: str,
     to_ignore: Optional[List[str]] = None,
-    rows: Optional[List[str]] = None,
+    columns: Optional[List[str]] = None,
 ) -> Textgrid:
     """Create frequency grid from database connection"""
     to_ignore = [] if to_ignore is None else to_ignore
 
     frequency_grid = make_empty_frequency_grid(
-        cursor=cursor, table_name=table_name, base_tier=word_form_tier, rows=rows
+        cursor=cursor, table_name=table_name, base_tier=word_form_tier, columns=columns
     )
 
     for i, entry in enumerate(word_form_tier.entryList):

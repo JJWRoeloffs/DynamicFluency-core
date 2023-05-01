@@ -62,9 +62,11 @@ def main():
         names = get_column_names(cursor, table_name=args.table_name)
 
     if not names:
-        names = ["#FAIL - Incorrect table name?"]
-    if not "WordForm" in names:
-        names = ['#FAIL - No column "WordForm" found.']
+        names = ["DYNAMICFLUENCY-ERROR - Incorrect table name?"]
+    elif not "WordForm" in names:
+        names = ["DYNAMICFLUENCY-ERROR - No column 'WordForm' found."]
+
+    names = [name for name in names if name != "WordForm"]
 
     with filepath.open("w", encoding="utf-8") as f:
         csv.writer(f).writerow(names)
