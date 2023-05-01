@@ -16,4 +16,6 @@ Running the development tests can be done with the following command:
 ```
 pytest --cov=dynamicfluency tests/
 ```
-Please note that this requires pytest and pytest-cov to be installed. Additionally, `dynamicfluency` has to be installed, either with `pip install -e .` or trough other means if you want to compare versions. The code itself, as it is in `src/`, isn't recognised.  
+Please note that this requires pytest and pytest-cov to be installed. Additionally, `dynamicfluency` has to be installed, either with `pip install -e .` or trough other means if you want to compare versions. The code itself, as it is in `src/`, isn't recognized.
+
+These tests will download a lot of language models on the first go, as it tests all supported languages. This will take a few minutes the first time the tests are run

@@ -7,6 +7,8 @@ import argparse
 from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 from praatio.data_classes.interval_tier import IntervalTier
+from spacy import language
+from dynamicfluency.languages import VALID_LANGUAGES
 
 from dynamicfluency.pos_tagging import make_pos_tier
 from dynamicfluency.helpers import get_local_glob
@@ -28,11 +30,25 @@ def parse_arguments() -> argparse.Namespace:
         "--allignment",
         help="The type of allignment textgrid, either 'maus' or 'aeneas'",
     )
+    parser.add_argument(
+        "-l",
+        "--language",
+        help="The language to get the tagging model of",
+        choices=[x for k, v in VALID_LANGUAGES.items() for x in (k, v)],
+        nargs="?",
+        default="en",
+    )
 
     args = parser.parse_args()
 
     if not Path(args.directory).exists():
         parser.error(f"{args.directory} does not exist")
+
+    if args.language in VALID_LANGUAGES.values():
+        [args.language] = [k for k, v in VALID_LANGUAGES.items() if v == args.language]
+
+    if args.language not in VALID_LANGUAGES.keys():
+        parser.error(f"{args.language} is not a valid language")
 
     return args
 
@@ -57,7 +73,7 @@ def main():
         ):
             raise ValueError("Cannot read Allignment: Not an interval tier")
 
-        tagged_tier = make_pos_tier(tier)
+        tagged_tier = make_pos_tier(tier, lang=args.language)
 
         tag_grid = Textgrid()
         tag_grid.addTier(tagged_tier)

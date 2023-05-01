@@ -1,13 +1,5 @@
-praatio==5.1
-nltk==3.7
-pandas
-numpy
-
-typing-extensions
-python-dateutil
-joblib
-click
-regex
-tqdm
-pytz
-six
+pandas~=1.5
+numpy~=1.23
+praatio~=5.1
+nltk~=3.7
+spacy ~= 3.5

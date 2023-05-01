@@ -1,25 +1,41 @@
 from __future__ import annotations
 
-from collections import namedtuple
-from typing import List, Union
+from typing import List, Tuple
 
 import nltk
-from praatio.data_classes.textgrid_tier import TextgridTier
+import spacy
+from praatio.data_classes.interval_tier import IntervalTier
+from praatio.utilities.utils import Interval
 
 from dynamicfluency.helpers import entrylist_labels_to_string, make_lowercase_entrylist
+from dynamicfluency.languages import (
+    NLTK_TAGGERS,
+    SPACY_MODELS,
+    assert_valid_language,
+    load_nltk_model,
+    load_spacy_model,
+)
 
 
-def generate_tags_from_entrylist(entryList: List[namedtuple]) -> List[Union[str, str]]:
+def generate_tags_from_entrylist(
+    entryList: List[Interval], *, lang: str = "en"
+) -> List[Tuple[str, str]]:
+    assert_valid_language(lang)
     text = entrylist_labels_to_string(entryList)
-    tokens: List[str] = nltk.word_tokenize(text)
-    return nltk.pos_tag(tokens)
+    if lang in NLTK_TAGGERS.keys():
+        load_nltk_model(NLTK_TAGGERS[lang])
+        tokens: List[str] = nltk.word_tokenize(text)
+        return nltk.pos_tag(tokens=tokens, lang=NLTK_TAGGERS[lang])
+    else:
+        nlp = load_spacy_model(SPACY_MODELS[lang])
+        return [(token.text, token.pos_) for token in nlp(text)]
 
 
 # Jankyness needed because the NLTK tokenise split sometimes splits words into smaller sub-sections
 def allign_tags(
-    tags: List[Union[str, str]], entryList: List[namedtuple]
-) -> List[namedtuple]:
-    """Make an alligned entrylist out of NLTK generated pos_tags and the entryList those were generated from."""
+    tags: List[Tuple[str, str]], entryList: List[Interval]
+) -> List[Interval]:
+    """Make an alligned entrylist out of NLTK/SpaCy generated pos_tags and the entryList those were generated from."""
 
     new_entryList = []
     for entry in entryList:
@@ -36,15 +52,17 @@ def allign_tags(
     return new_entryList
 
 
-def make_pos_tier(words_tier: TextgridTier, *, name: str = "POStags") -> TextgridTier:
+def make_pos_tier(
+    words_tier: IntervalTier, *, name: str = "POStags", lang: str = "en"
+) -> IntervalTier:
     """Makes a POS tagged tier from a textgrid tier with alligned words"""
+    assert_valid_language(lang)
 
     nltk.download("punkt", quiet=True, halt_on_error=True)
-    nltk.download("averaged_perceptron_tagger", quiet=True, halt_on_error=True)
 
     lowercase_entryList = make_lowercase_entrylist(words_tier.entryList)
 
-    tags = generate_tags_from_entrylist(lowercase_entryList)
+    tags = generate_tags_from_entrylist(lowercase_entryList, lang=lang)
     tag_entryList = allign_tags(tags, lowercase_entryList)
 
     return words_tier.new(name=name, entryList=tag_entryList)
