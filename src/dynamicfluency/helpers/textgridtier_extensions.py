@@ -7,7 +7,7 @@ from praatio.data_classes.textgrid import Textgrid
 from praatio.utilities.constants import Interval
 
 
-def replace_label(entry: namedtuple, f: Callable) -> namedtuple:
+def replace_label(entry: namedtuple, f: Callable[[str], str]) -> namedtuple:
     """Returns a new namedtuple with the "label" attribute changed according to passed function."""
     return entry._replace(label=f(entry.label))
 

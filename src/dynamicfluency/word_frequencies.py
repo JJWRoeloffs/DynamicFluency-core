@@ -3,7 +3,6 @@ from __future__ import annotations
 import sqlite3
 from typing import List, Optional
 
-from praatio import textgrid as tg
 from praatio.data_classes.textgrid import Textgrid
 from praatio.data_classes.interval_tier import IntervalTier
 

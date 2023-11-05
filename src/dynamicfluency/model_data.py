@@ -1,5 +1,5 @@
-import sys
 from typing import Set
+
 import nltk
 import spacy
 
@@ -15,13 +15,11 @@ VALID_LANGUAGES = {
     "lt": "Lithuanian",
     "pl": "Polish",
     "ro": "Romanian",
-    "ru": "Russian",
     "sv": "Swedish",
 }
 
 NLTK_TAGGERS = {
     "en": "eng",
-    "ru": "rus",
 }
 
 SPACY_MODELS = {
@@ -93,15 +91,18 @@ def load_spacy_model(model: str):
 
 
 def load_nltk_model(model: str):
-    if model == "rus":
-        nltk.download("averaged_perceptron_tagger_ru", quiet=True, halt_on_error=True)
-    else:
+    if model == "eng":
+        nltk.download("punkt", quiet=True, halt_on_error=True)
         nltk.download("averaged_perceptron_tagger", quiet=True, halt_on_error=True)
+    else:
+        raise ValueError(f"Language {model} not supported by NLTK")
 
 
 def get_valid_tags(lang: str) -> Set[str]:
     assert_valid_language(lang)
     if lang in NLTK_TAGGERS.keys():
         return NLTK_POS_TAGS
-    else:
+    elif lang in SPACY_MODELS.keys():
         return {*spacy.glossary.GLOSSARY.keys()}
+    else:
+        raise ValueError(f"Unknown or unsuppoerted language: {lang}")

@@ -44,8 +44,6 @@ def make_repetitions_tier(
 def make_freqdist_tier(
     pos_tier: IntervalTier, *, to_ignore: List[str] = [], name: str = "FreqDist"
 ) -> IntervalTier:
-    nltk.download("punkt", quiet=True, halt_on_error=True)
-
     processed_entryList = [
         interval
         for interval in pos_tier.entryList

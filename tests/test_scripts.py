@@ -3,7 +3,7 @@
 
 from dynamicfluency.scripts.add_frequency_dictionary import *
 from dynamicfluency.scripts.convert_aeneas_to_textgrids import *
-from dynamicfluency.scripts.download_nltk_requirements import *
+from dynamicfluency.scripts.download_models import *
 from dynamicfluency.scripts.get_database_columns import *
 from dynamicfluency.scripts.make_frequencytagged_girds_from_alligned_grids import *
 from dynamicfluency.scripts.make_postagged_grids_from_alligned_grids import *

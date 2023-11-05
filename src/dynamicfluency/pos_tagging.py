@@ -25,9 +25,11 @@ def generate_tags_from_entrylist(
         load_nltk_model(NLTK_TAGGERS[lang])
         tokens: List[str] = nltk.word_tokenize(text)
         return nltk.pos_tag(tokens=tokens, lang=NLTK_TAGGERS[lang])
-    else:
+    elif lang in SPACY_MODELS.keys():
         nlp = load_spacy_model(SPACY_MODELS[lang])
         return [(token.text, token.pos_) for token in nlp(text)]
+    else:
+        raise ValueError(f"Unknown or unsupported language: {lang}")
 
 
 # Jankyness needed because the NLTK tokenise split sometimes splits words into smaller sub-sections
@@ -56,8 +58,6 @@ def make_pos_tier(
 ) -> IntervalTier:
     """Makes a POS tagged tier from a textgrid tier with alligned words"""
     assert_valid_language(lang)
-
-    nltk.download("punkt", quiet=True, halt_on_error=True)
 
     lowercase_entryList = make_lowercase_entrylist(words_tier.entryList)
 
