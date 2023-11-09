@@ -8,4 +8,4 @@ Monitor and understand the dynamicity of linguistic aspects in (L2) speech.
 __title__ = "DynamicFluency"
 __author__ = "JJWRoeloffs"
 __license__ = "AGPL-3.0"
-__version__ = "0.1.4"
+__version__ = "0.2.0"
