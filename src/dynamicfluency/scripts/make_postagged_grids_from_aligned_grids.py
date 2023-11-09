@@ -15,7 +15,7 @@ from dynamicfluency.helpers import get_local_glob
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Creates a textgrid with a POS-tagged tier from an allignment textgrid"
+        description="Creates a textgrid with a POS-tagged tier from an alignment textgrid"
     )
     parser.add_argument(
         "-d",
@@ -26,8 +26,8 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "-a",
-        "--allignment",
-        help="The type of allignment textgrid, 'maus' or 'aeneas' or 'whisper'",
+        "--alignment",
+        help="The type of alignment textgrid, 'maus' or 'aeneas' or 'whisper'",
     )
     parser.add_argument(
         "-l",
@@ -55,31 +55,31 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    if args.allignment == "maus":
+    if args.alignment == "maus":
         tokentier_name = "ORT-MAU"
-    elif args.allignment == "aeneas":
+    elif args.alignment == "aeneas":
         tokentier_name = "Words"
-    elif args.allignment == "whisper":
+    elif args.alignment == "whisper":
         tokentier_name = "words_text"
     else:
-        raise ValueError(f"Unknown allignment type found: {args.allignment}")
+        raise ValueError(f"Unknown alignment type found: {args.alignment}")
 
-    allignment_files = get_local_glob(args.directory, glob="*.allignment.TextGrid")
+    alignment_files = get_local_glob(args.directory, glob="*.alignment.TextGrid")
 
-    for file in allignment_files:
-        allignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
+    for file in alignment_files:
+        alignment_grid = tg.openTextgrid(str(file), includeEmptyIntervals=True)
 
         if not isinstance(
-            tier := allignment_grid.tierDict[tokentier_name], IntervalTier
+            tier := alignment_grid.tierDict[tokentier_name], IntervalTier
         ):
-            raise ValueError("Cannot read Allignment: Not an interval tier")
+            raise ValueError("Cannot read alignment: Not an interval tier")
 
         tagged_tier = make_pos_tier(tier, lang=args.language)
 
         tag_grid = Textgrid()
         tag_grid.addTier(tagged_tier)
 
-        name = str(file).replace(".allignment.TextGrid", ".pos_tags.TextGrid")
+        name = str(file).replace(".alignment.TextGrid", ".pos_tags.TextGrid")
         tag_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
 

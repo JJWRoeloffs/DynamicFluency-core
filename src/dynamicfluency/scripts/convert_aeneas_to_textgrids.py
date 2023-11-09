@@ -33,18 +33,18 @@ def parse_arguments() -> argparse.Namespace:
 def main():
     args: argparse.Namespace = parse_arguments()
 
-    word_allignments = get_local_glob(args.directory, glob="*.tokens.json")
-    phrase_allignments = get_local_glob(args.directory, glob="*.phrases.json")
+    word_alignments = get_local_glob(args.directory, glob="*.tokens.json")
+    phrase_alignments = get_local_glob(args.directory, glob="*.phrases.json")
 
-    for words, phrases in zip(word_allignments, phrase_allignments):
+    for words, phrases in zip(word_alignments, phrase_alignments):
         words_tier = aeneas_tier_from_file(words, "Words")
         phrases_tier = aeneas_tier_from_file(phrases, "Phrases")
 
-        allignment_grid = Textgrid()
-        allignment_grid.addTier(words_tier)
-        allignment_grid.addTier(phrases_tier)
-        name = str(words).replace(".tokens.json", ".allignment.TextGrid")
-        allignment_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
+        alignment_grid = Textgrid()
+        alignment_grid.addTier(words_tier)
+        alignment_grid.addTier(phrases_tier)
+        name = str(words).replace(".tokens.json", ".alignment.TextGrid")
+        alignment_grid.save(name, format="long_textgrid", includeBlankSpaces=True)
 
         os.remove(words)
         os.remove(phrases)

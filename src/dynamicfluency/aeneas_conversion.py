@@ -39,10 +39,10 @@ class AeneasIntervaltier(IntervalTier):
 
     @classmethod
     def from_json(
-        cls, allignments: Dict, name: str, *, force_validity: bool = True
+        cls, alignments: Dict, name: str, *, force_validity: bool = True
     ) -> AeneasIntervaltier:
         entryList = []
-        for fragment in allignments["fragments"]:
+        for fragment in alignments["fragments"]:
             entry = Interval(
                 start=float(fragment["begin"]),
                 end=float(fragment["end"]),
@@ -60,7 +60,7 @@ def aeneas_tier_from_file(
     file: Path, name: str, *, force_validity: bool = True
 ) -> AeneasIntervaltier:
     with file.open("r") as f:
-        allignment_dict = json.load(f)
+        alignment_dict = json.load(f)
     return AeneasIntervaltier.from_json(
-        allignment_dict, name, force_validity=force_validity
+        alignment_dict, name, force_validity=force_validity
     )

@@ -33,10 +33,10 @@ def generate_tags_from_entrylist(
 
 
 # Jankyness needed because the NLTK tokenise split sometimes splits words into smaller sub-sections
-def allign_tags(
+def align_tags(
     tags: List[Tuple[str, str]], entryList: List[Interval]
 ) -> List[Interval]:
-    """Make an alligned entrylist out of NLTK/SpaCy generated pos_tags and the entryList those were generated from."""
+    """Make an aligned entrylist out of NLTK/SpaCy generated pos_tags and the entryList those were generated from."""
 
     new_entryList = []
     for entry in entryList:
@@ -56,12 +56,12 @@ def allign_tags(
 def make_pos_tier(
     words_tier: IntervalTier, *, name: str = "POStags", lang: str = "en"
 ) -> IntervalTier:
-    """Makes a POS tagged tier from a textgrid tier with alligned words"""
+    """Makes a POS tagged tier from a textgrid tier with aligned words"""
     assert_valid_language(lang)
 
     lowercase_entryList = make_lowercase_entrylist(words_tier.entryList)
 
     tags = generate_tags_from_entrylist(lowercase_entryList, lang=lang)
-    tag_entryList = allign_tags(tags, lowercase_entryList)
+    tag_entryList = align_tags(tags, lowercase_entryList)
 
     return words_tier.new(name=name, entryList=tag_entryList)
